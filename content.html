@@ -76,7 +76,7 @@ async function pw(url) {
         const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
         if(res.ok || res.status === 401) {
             const data = await res.json();
-            if(data.needsLogin) { return null; }
+            if(data.needsLogin) { throw new Error('Fallback'); }
             return data;
         }
         throw new Error('Fallback');
