@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Stream — AS Multiverse</title>
+<link rel="icon" type="image/png" href="/static/site_logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;height:52px;background:#0a0a0a;display:flex;align-items:center;padding:0 12px;z-index:1000;border-bottom:1px solid #1e1e1e}
+.header-left{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:700;font-size:16px;cursor:pointer;flex:1;overflow:hidden}
+.header-left svg{width:20px;height:20px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.hamburger{width:24px;height:24px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.header-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Tab Bar */
+.tab-bar{position:fixed;top:52px;left:0;right:0;height:46px;background:rgba(10,10,10,0.95);backdrop-filter:blur(8px);z-index:900;border-bottom:1px solid #1e1e1e;display:flex;align-items:flex-end}
+.tab{flex:1;text-align:center;font-size:13px;font-weight:700;color:#9ca3af;padding-bottom:12px;cursor:pointer;border-bottom:3px solid transparent;border-right:1px solid #1e1e1e;transition:all 0.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab:last-child{border-right:none}
+.tab.active{color:#fff;border-bottom-color:#00d4ff}
+
+/* Content Area */
+.container{padding:114px 12px 40px;max-width:1000px;margin:0 auto}
+.panel{display:none}
+.panel.active{display:block}
+
+/* Video Grid */
+.video-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:768px){.video-grid{grid-template-columns:1fr 1fr}}
+
+/* Video Card */
+.video-card{background:#141414;border:1px solid rgba(0,212,255,0.2);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.card-main{display:flex;padding:12px;gap:12px}
+.thumb-wrap{width:130px;min-width:130px;height:74px;border-radius:8px;overflow:hidden;position:relative;background:#1a1a1a}
+.thumb-img{width:100%;height:100%;object-fit:cover;display:block}
+.dur-badge{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.8);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;letter-spacing:0.5px}
+
+.info-wrap{flex:1;min-width:0;position:relative;padding-right:24px}
+.badge-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.lecture-badge{background:#00d4ff;color:#0a0a0a;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;text-transform:uppercase}
+.date-text{font-size:11px;color:#9ca3af;font-weight:600}
+.video-title{font-size:14px;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#fff}
+
+/* Completion Circle */
+.complete-btn{position:absolute;top:0;right:0;width:24px;height:24px;border-radius:50%;border:2px solid #374151;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.complete-btn svg{width:12px;height:12px;stroke:none;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:all 0.2s}
+.complete-btn.done{border-color:#22c55e;background:#22c55e}
+.complete-btn.done svg{stroke:#fff}
+
+/* Buttons Row */
+.btn-row{display:flex;gap:8px;padding:0 12px 12px;margin-top:auto}
+.btn-watch{flex:6;background:#00d4ff;color:#0a0a0a;border:none;border-radius:8px;padding:10px 0;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn-notes{flex:4;background:transparent;border:1px solid #374151;color:#9ca3af;border-radius:8px;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.btn-notes:hover{border-color:#00d4ff;color:#00d4ff}
+
+/* Notes / PDF Card */
+.note-card{background:#141414;border:1px solid #1e1e1e;border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px;margin-bottom:12px;text-decoration:none}
+.pdf-icon{width:40px;height:40px;background:rgba(239,68,68,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.note-info{flex:1}
+.note-title{color:#fff;font-size:14px;font-weight:700;margin-bottom:4px}
+.note-date{color:#9ca3af;font-size:12px}
+
+/* DPP Card */
+.dpp-card{background:#141414;border:1px solid rgba(0,212,255,0.2);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px;margin-bottom:12px;text-decoration:none}
+.dpp-info{flex:1}
+.dpp-title{color:#fff;font-size:14px;font-weight:700;margin-bottom:8px}
+.dpp-meta{color:#9ca3af;font-size:12px;display:flex;gap:12px}
+.play-btn-circle{width:40px;height:40px;background:#00d4ff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.play-icon{width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid #0a0a0a;margin-left:4px}
+
+/* Skels */
+.skel{background:linear-gradient(90deg,#141414 25%,#1e1e1e 50%,#141414 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px;height:140px;margin-bottom:16px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.empty-state{text-align:center;padding:60px 20px;color:#9ca3af;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left" onclick="history.back()">
+        <svg class="hamburger" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span class="header-title" id="headerTitle">Stream</span>
+    </div>
+</div>
+
+<div class="tab-bar">
+    <div class="tab active" data-tab="videos" onclick="switchTab('videos', this)">Lectures</div>
+    <div class="tab" data-tab="notes" onclick="switchTab('notes', this)">Notes</div>
+    <div class="tab" data-tab="dpp" onclick="switchTab('dpp', this)">DPP</div>
+    <div class="tab" data-tab="DppVideos" onclick="switchTab('DppVideos', this)">DPP Videos</div>
+</div>
+
+<div class="container">
+    <div id="panel-videos" class="panel active"><div class="video-grid" id="grid-videos"></div><div class="skel-wrap" id="skel-videos"></div></div>
+    <div id="panel-notes" class="panel"><div id="list-notes"></div><div class="skel-wrap" id="skel-notes"></div></div>
+    <div id="panel-dpp" class="panel"><div id="list-dpp"></div><div class="skel-wrap" id="skel-dpp"></div></div>
+    <div id="panel-DppVideos" class="panel"><div class="video-grid" id="grid-DppVideos"></div><div class="skel-wrap" id="skel-DppVideos"></div></div>
+</div>
+
+<script>
+const QS = new URLSearchParams(location.search);
+const BATCH_ID = QS.get('batchId') || '';
+const SUBJECT_ID = QS.get('subjectId') || '';
+const CHAPTER_ID = QS.get('chapterId') || '';
+const CHAPTER_NAME = QS.get('chapterName') || '';
+const INIT_SEC = QS.get('section') || 'videos';
+
+if(!BATCH_ID || !SUBJECT_ID || !CHAPTER_ID) window.location.href = '/index.html';
+
+document.title = (CHAPTER_NAME || 'Stream') + ' — AS Multiverse';
+document.getElementById('headerTitle').textContent = CHAPTER_NAME || 'Stream';
+
+function getToken() { return localStorage.getItem('pw_token') || ''; }
+async function pw(url) {
+    const headers = {};
+    const token = getToken();
+    if(token) headers['X-PW-Token'] = token;
+    try {
+        const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
+        if(res.ok || res.status === 401) {
+            const data = await res.json();
+            if(data.needsLogin) { window.location.href = '/login.html'; return null; }
+            return data;
+        }
+        throw new Error('Fallback');
+    } catch(e) {
+        // Fallback for Live Server (no backend)
+        const FALLBACK_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3ODIzOTAxMTMuNzEyLCJkYXRhIjp7Il9pZCI6IjY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsInVzZXJuYW1lIjoiNzgzMDMzNzI3MSIsImZpcnN0TmFtZSI6IkFiaGlzaGVrIiwibGFzdE5hbWUiOiJZYWRhdiIsIm9yZ2FuaXphdGlvbiI6eyJfaWQiOiI1ZWIzOTNlZTk1ZmFiNzQ2OGE3OWQxODkiLCJ3ZWJzaXRlIjoicGh5c2ljc3dhbGxhaC5jb20iLCJuYW1lIjoiUGh5c2ljc3dhbGxhaCJ9LCJyb2xlcyI6WyI1YjI3YmQ5NjU4NDJmOTUwYTc3OGM2ZWYiXSwiY291bnRyeUdyb3VwIjoiSU4iLCJ0eXBlIjoiVVNFUiJ9LCJqdGkiOiJra291RTR3ZVJjV3BIbUdPNWtRQWZ3XzY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsImlhdCI6MTc4MTc4NTMxM30.2w2lMP9BrAhJq5Tt7vrXOyOBM_lGW0tCJnniu_Yogsc";
+        const DIRECT_HEADERS = {
+            "User-Agent": "Dalvik/2.1.0",
+            "client-id": "ADMIN",
+            "client-type": "MOBILE",
+            "client-version": "538",
+            "device-meta": '{"APP_VERSION":"538","APP_VERSION_NAME":"15.32.0","DEVICE_MAKE":"Samsung","DEVICE_MODEL":"SM-A707F","OS_VERSION":"11","PACKAGE_NAME":"xyz.penpencil.physicswala","network":"wifi_data","carrier":"UNDEFINED"}',
+            "authorization": token ? "Bearer " + token : FALLBACK_TOKEN
+        };
+        try {
+            const dirRes = await fetch(url, { headers: DIRECT_HEADERS });
+            return await dirRes.json();
+        } catch(err) {
+            console.error('Direct fetch failed:', err);
+            return null;
+        }
+    }
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ep(s){return encodeURIComponent(s||'')}
+function fmtDate(iso){if(!iso)return'';try{const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}catch{return'';}}
+
+const state = {
+    videos: { page: 1, loading: false, done: false, loaded: false },
+    notes: { page: 1, loading: false, done: false, loaded: false },
+    dpp: { page: 1, loading: false, done: false, loaded: false },
+    DppVideos: { page: 1, loading: false, done: false, loaded: false }
+};
+
+let activeTab = INIT_SEC;
+
+function getCompleted() { try{ return JSON.parse(localStorage.getItem('as_completed')||'{}'); }catch{ return {}; } }
+function toggleComplete(e, id) {
+    e.preventDefault(); e.stopPropagation();
+    const btn = e.currentTarget;
+    const c = getCompleted();
+    if(c[id]) { delete c[id]; btn.classList.remove('done'); }
+    else { c[id] = true; btn.classList.add('done'); }
+    localStorage.setItem('as_completed', JSON.stringify(c));
+}
+
+function renderSkeletons(id, isVideo) {
+    const wrap = document.getElementById('skel-' + id);
+    const h = isVideo ? 140 : 80;
+    wrap.innerHTML = `<div class="skel" style="height:${h}px"></div><div class="skel" style="height:${h}px"></div>`;
+}
+function clearSkeletons(id) { document.getElementById('skel-' + id).innerHTML = ''; }
+
+async function loadContent(tab) {
+    const st = state[tab];
+    if(st.loading || st.done) return;
+    st.loading = true;
+    
+    const isVideo = tab === 'videos' || tab === 'DppVideos';
+    const isDpp = tab === 'dpp';
+    const containerId = isVideo ? 'grid-' + tab : 'list-' + tab;
+    const container = document.getElementById(containerId);
+    
+    if(st.page === 1) { container.innerHTML = ''; renderSkeletons(tab, isVideo); }
+    else { renderSkeletons(tab, isVideo); }
+    
+    let url = '';
+    if(isDpp) url = `https://api.penpencil.co/v3/test-service/tests/dpp?batchId=${BATCH_ID}&batchSubjectId=${SUBJECT_ID}&chapterId=${CHAPTER_ID}&isSubjective=false&page=${st.page}`;
+    else url = `https://api.penpencil.co/v2/batches/${BATCH_ID}/subject/${SUBJECT_ID}/contents?page=${st.page}&contentType=${tab}&tag=${CHAPTER_ID}`;
+    
+    const data = await pw(url);
+    clearSkeletons(tab);
+    st.loaded = true;
+    
+    if(!data || !data.success || !data.data || data.data.length === 0) {
+        st.done = true;
+        if(st.page === 1) container.innerHTML = `<div class="empty-state">No content found for ${tab}</div>`;
+        st.loading = false; return;
+    }
+    
+    const comp = getCompleted();
+    const frags = document.createDocumentFragment();
+    
+    if(isDpp) {
+        data.data.forEach(item => {
+            const test = item.test || {};
+            const a = document.createElement('a');
+            a.className = 'dpp-card';
+            a.href = '#'; // DPP player integration placeholder
+            a.onclick = (e) => { e.preventDefault(); alert('Test/DPP player coming soon!'); };
+            a.innerHTML = `
+                <div class="dpp-info">
+                    <div class="dpp-title">${esc(test.name || 'DPP Quiz')}</div>
+                    <div class="dpp-meta"><span>📋 ${test.totalQuestions||0} Qs</span><span>⭐ ${test.totalMarks||0} Marks</span></div>
+                </div>
+                <div class="play-btn-circle"><div class="play-icon"></div></div>
+            `;
+            frags.appendChild(a);
+        });
+    } else if(isVideo) {
+        data.data.forEach(item => {
+            const vd = item.videoDetails || {};
+            const thumb = vd.image || '/static/site_thumbnail.png';
+            const dur = vd.duration || '';
+            const date = fmtDate(item.date || item.startTime);
+            const id = item._id;
+            const name = item.topic || vd.name || 'Video';
+            const doneCls = comp[id] ? 'done' : '';
+            
+            const div = document.createElement('div');
+            div.className = 'video-card';
+            
+            const watchUrl = `/schedule-details.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(SUBJECT_ID)}&scheduleId=${ep(id)}&tap=video`;
+            const noteUrl = `/schedule-details.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(SUBJECT_ID)}&scheduleId=${ep(id)}&tap=note&noteIndex=0`;
+            
+            div.innerHTML = `
+                <div class="card-main">
+                    <div class="thumb-wrap">
+                        <img src="${esc(thumb)}" class="thumb-img" loading="lazy" onerror="this.src='/static/site_thumbnail.png'">
+                        ${dur ? `<div class="dur-badge">${esc(dur)}</div>` : ''}
+                    </div>
+                    <div class="info-wrap">
+                        <div class="badge-row">
+                            <span class="lecture-badge">LECTURE</span>
+                            <span class="date-text">${esc(date)}</span>
+                        </div>
+                        <div class="video-title">${esc(name)}</div>
+                        <button class="complete-btn ${doneCls}" onclick="toggleComplete(event, '${esc(id)}')">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <a href="${esc(watchUrl)}" class="btn-watch">▶ Watch Now</a>
+                    <a href="${esc(noteUrl)}" class="btn-notes">Notes</a>
+                </div>
+            `;
+            frags.appendChild(div);
+        });
+    } else if(tab === 'notes') {
+        data.data.forEach(item => {
+            const date = fmtDate(item.date || item.startTime);
+            (item.homeworkIds || []).forEach((hw, hwIdx) => {
+                (hw.attachmentIds || []).forEach((att, attIdx) => {
+                    let gIdx = 0;
+                    for(let i=0; i<hwIdx; i++) gIdx += (item.homeworkIds[i].attachmentIds||[]).length;
+                    gIdx += attIdx;
+                    
+                    const a = document.createElement('a');
+                    a.className = 'note-card';
+                    a.href = `/schedule-details.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(SUBJECT_ID)}&scheduleId=${ep(item._id)}&tap=note&noteIndex=${gIdx}`;
+                    a.innerHTML = `
+                        <div class="pdf-icon">📄</div>
+                        <div class="note-info">
+                            <div class="note-title">${esc(hw.topic || att.name || 'Note')}</div>
+                            <div class="note-date">${esc(date)}</div>
+                        </div>
+                    `;
+                    frags.appendChild(a);
+                });
+            });
+        });
+    }
+    
+    container.appendChild(frags);
+    
+    if(isDpp) {
+        const total = data.paginate?.totalCount || 0;
+        const limit = data.paginate?.limit || 50;
+        if(data.data.length < limit || (total > 0 && st.page * limit >= total)) st.done = true;
+        else st.page++;
+    } else {
+        if(data.data.length < 20) st.done = true;
+        else st.page++;
+    }
+    
+    st.loading = false;
+}
+
+function switchTab(tab, btnEle) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if(btnEle) btnEle.classList.add('active');
+    else document.querySelector(`.tab[data-tab="${tab}"]`)?.classList.add('active');
+    
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    
+    activeTab = tab;
+    if(!state[tab].loaded) loadContent(tab);
+}
+
+window.addEventListener('scroll', () => {
+    if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 200) {
+        loadContent(activeTab);
+    }
+});
+
+// Init
+(function(){
+    let btn = document.querySelector(`.tab[data-tab="${INIT_SEC}"]`);
+    if(!btn) { INIT_SEC = 'videos'; btn = document.querySelector(`.tab[data-tab="videos"]`); }
+    switchTab(INIT_SEC, btn);
+})();
+</script>
+</body>
+</html>

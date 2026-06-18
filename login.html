@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Login — AS Multiverse</title>
+<link rel="icon" type="image/png" href="/static/site_logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent}
+body,html{min-height:100vh;font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff}
+.login-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,rgba(0,212,255,0.06) 0%,transparent 60%)}
+.login-card{width:100%;max-width:420px;background:#141414;border-radius:24px;border:1px solid #1e1e1e;padding:40px 32px;position:relative;overflow:hidden}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#00d4ff,transparent)}
+.brand{text-align:center;margin-bottom:36px}
+.brand-icon{width:56px;height:56px;margin:0 auto 16px;background:linear-gradient(135deg,#00d4ff,#0088aa);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;box-shadow:0 8px 32px rgba(0,212,255,0.25)}
+.brand-name{font-size:22px;font-weight:800;letter-spacing:1px;color:#fff}
+.brand-sub{font-size:13px;color:#9ca3af;margin-top:4px}
+.step{display:none}
+.step.active{display:block}
+.step-title{font-size:16px;font-weight:700;margin-bottom:6px;color:#fff}
+.step-desc{font-size:13px;color:#9ca3af;margin-bottom:24px;line-height:1.5}
+.input-group{margin-bottom:20px}
+.input-label{display:block;font-size:12px;font-weight:700;color:#9ca3af;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+.input-field{width:100%;padding:14px 18px;background:#0a0a0a;border:2px solid #1e1e1e;border-radius:14px;font-size:16px;color:#fff;font-family:'Inter',sans-serif;transition:border-color 0.2s,box-shadow 0.2s}
+.input-field:focus{border-color:#00d4ff;box-shadow:0 0 0 3px rgba(0,212,255,0.15)}
+.input-field::placeholder{color:#4b5563}
+.phone-row{display:flex;gap:10px;align-items:stretch}
+.country-code{width:72px;flex-shrink:0;padding:14px 12px;background:#0a0a0a;border:2px solid #1e1e1e;border-radius:14px;font-size:16px;color:#9ca3af;text-align:center;font-family:'Inter',sans-serif;font-weight:600}
+.phone-input{flex:1}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.3px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,#00d4ff,#0088aa);color:#fff;box-shadow:0 4px 20px rgba(0,212,255,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,212,255,0.4)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-outline{background:transparent;border:2px solid #1e1e1e;color:#9ca3af}
+.btn-outline:hover{border-color:#00d4ff;color:#00d4ff}
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:24px}
+.otp-box{width:52px;height:56px;background:#0a0a0a;border:2px solid #1e1e1e;border-radius:14px;font-size:22px;font-weight:700;color:#fff;text-align:center;font-family:'Inter',sans-serif;transition:border-color 0.2s}
+.otp-box:focus{border-color:#00d4ff;box-shadow:0 0 0 3px rgba(0,212,255,0.15)}
+.resend-row{text-align:center;margin-top:16px}
+.resend-btn{background:none;border:none;color:#00d4ff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;opacity:0.7;transition:opacity 0.2s}
+.resend-btn:hover{opacity:1}
+.resend-btn:disabled{color:#4b5563;cursor:not-allowed;opacity:0.5}
+.error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:12px 16px;font-size:13px;color:#f87171;margin-bottom:20px;display:none;line-height:1.5}
+.error-msg.show{display:block}
+.success-card{text-align:center;padding:20px 0}
+.success-icon{font-size:56px;margin-bottom:16px}
+.success-title{font-size:20px;font-weight:800;margin-bottom:8px;color:#22c55e}
+.success-name{font-size:15px;color:#9ca3af;margin-bottom:28px}
+.spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;display:none}
+.btn-primary .spinner{display:none}
+.btn-primary.loading .spinner{display:block}
+.btn-primary.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skip-link{text-align:center;margin-top:24px}
+.skip-link a{color:#4b5563;font-size:12px;text-decoration:none;font-weight:500;transition:color 0.2s}
+.skip-link a:hover{color:#9ca3af}
+</style>
+</head>
+<body>
+<div class="login-wrapper">
+<div class="login-card">
+<div class="brand">
+<div class="brand-icon">AS</div>
+<div class="brand-name">AS MULTIVERSE</div>
+<div class="brand-sub">Login with PhysicsWallah Account</div>
+</div>
+
+<div id="errorMsg" class="error-msg"></div>
+
+<!-- Step 1: Phone Number -->
+<div id="step-phone" class="step active">
+<div class="step-title">Enter Phone Number</div>
+<div class="step-desc">Enter your PW registered mobile number to receive an OTP</div>
+<div class="input-group">
+<label class="input-label">Mobile Number</label>
+<div class="phone-row">
+<input type="text" class="country-code" value="+91" readonly>
+<input type="tel" id="phoneInput" class="input-field phone-input" placeholder="Enter 10-digit number" maxlength="10" inputmode="numeric" autocomplete="tel">
+</div>
+</div>
+<button class="btn btn-primary" id="sendOtpBtn" onclick="sendOtp()">
+<span class="btn-text">Send OTP</span>
+<div class="spinner"></div>
+</button>
+<div class="skip-link"><a href="/">← Back to Home</a></div>
+</div>
+
+<!-- Step 2: OTP Verification -->
+<div id="step-otp" class="step">
+<div class="step-title">Verify OTP</div>
+<div class="step-desc">Enter the 4-digit code sent to <strong id="otpPhone"></strong></div>
+<div class="otp-inputs" id="otpInputs">
+<input type="tel" class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+<input type="tel" class="otp-box" maxlength="1" inputmode="numeric">
+<input type="tel" class="otp-box" maxlength="1" inputmode="numeric">
+<input type="tel" class="otp-box" maxlength="1" inputmode="numeric">
+</div>
+<button class="btn btn-primary" id="verifyOtpBtn" onclick="verifyOtp()">
+<span class="btn-text">Verify & Login</span>
+<div class="spinner"></div>
+</button>
+<div class="resend-row">
+<button class="resend-btn" id="resendBtn" onclick="sendOtp()" disabled>Resend OTP (<span id="resendTimer">30</span>s)</button>
+</div>
+<button class="btn btn-outline" onclick="goToPhone()" style="margin-top:12px">← Change Number</button>
+</div>
+
+<!-- Step 3: Success -->
+<div id="step-success" class="step">
+<div class="success-card">
+<div class="success-icon">✅</div>
+<div class="success-title">Login Successful!</div>
+<div class="success-name" id="successName"></div>
+<button class="btn btn-primary" onclick="window.location.href='/'">
+<span class="btn-text">Go to Homepage</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+let currentPhone = '';
+let resendInterval = null;
+
+function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function hideError() {
+    document.getElementById('errorMsg').classList.remove('show');
+}
+
+function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (loading) { btn.classList.add('loading'); btn.disabled = true; }
+    else { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+function switchStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + step).classList.add('active');
+    hideError();
+}
+
+function goToPhone() {
+    switchStep('phone');
+    document.getElementById('phoneInput').focus();
+}
+
+function startResendTimer() {
+    let sec = 30;
+    const btn = document.getElementById('resendBtn');
+    const timer = document.getElementById('resendTimer');
+    btn.disabled = true;
+    if (resendInterval) clearInterval(resendInterval);
+    resendInterval = setInterval(() => {
+        sec--;
+        timer.textContent = sec;
+        if (sec <= 0) {
+            clearInterval(resendInterval);
+            btn.disabled = false;
+            btn.textContent = 'Resend OTP';
+        }
+    }, 1000);
+}
+
+async function sendOtp() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!/^\d{10}$/.test(phone)) {
+        showError('Please enter a valid 10-digit phone number');
+        return;
+    }
+    currentPhone = phone;
+    hideError();
+    setLoading('sendOtpBtn', true);
+
+    try {
+        const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'sendOtp', phone: phone })
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById('otpPhone').textContent = '+91 ' + phone;
+            switchStep('otp');
+            startResendTimer();
+            document.querySelector('.otp-box').focus();
+        } else {
+            showError(data.message || 'Failed to send OTP. Try again.');
+        }
+    } catch (e) {
+        showError('Network error. Please check your connection.');
+    } finally {
+        setLoading('sendOtpBtn', false);
+    }
+}
+
+async function verifyOtp() {
+    const boxes = document.querySelectorAll('.otp-box');
+    const otp = Array.from(boxes).map(b => b.value).join('');
+    if (otp.length !== 4) {
+        showError('Please enter the complete 4-digit OTP');
+        return;
+    }
+    hideError();
+    setLoading('verifyOtpBtn', true);
+
+    try {
+        const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'verifyOtp', phone: currentPhone, otp: otp })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+            localStorage.setItem('pw_token', data.token);
+            localStorage.setItem('pw_user', JSON.stringify(data.user || {}));
+            localStorage.setItem('pw_login_time', Date.now().toString());
+            document.getElementById('successName').textContent = 'Welcome, ' + (data.user?.name || currentPhone);
+            switchStep('success');
+        } else {
+            showError(data.message || 'Invalid OTP. Please try again.');
+        }
+    } catch (e) {
+        showError('Network error. Please check your connection.');
+    } finally {
+        setLoading('verifyOtpBtn', false);
+    }
+}
+
+// OTP input auto-focus logic
+document.querySelectorAll('.otp-box').forEach((box, idx, boxes) => {
+    box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val.slice(0, 1);
+        if (val && idx < boxes.length - 1) boxes[idx + 1].focus();
+        if (idx === boxes.length - 1 && val) verifyOtp();
+    });
+    box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+            boxes[idx - 1].focus();
+            boxes[idx - 1].value = '';
+        }
+    });
+    box.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 4);
+        paste.split('').forEach((ch, i) => { if (boxes[i]) boxes[i].value = ch; });
+        if (paste.length >= 4) verifyOtp();
+    });
+});
+
+// Phone input: enter key sends OTP
+document.getElementById('phoneInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendOtp();
+});
+
+// Check if already logged in
+(function() {
+    const token = localStorage.getItem('pw_token');
+    if (token) {
+        const loginTime = parseInt(localStorage.getItem('pw_login_time') || '0');
+        const daysSince = (Date.now() - loginTime) / (1000 * 60 * 60 * 24);
+        if (daysSince < 7) {
+            // Already logged in, redirect home
+            // window.location.href = '/';
+        }
+    }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chapters — AS Multiverse</title>
+<link rel="icon" type="image/png" href="/static/site_logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;height:52px;background:#0a0a0a;display:flex;align-items:center;padding:0 12px;z-index:1000;border-bottom:1px solid #1e1e1e}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.5),transparent)}
+.back-btn{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:700;font-size:16px;cursor:pointer;padding:8px 0}
+.back-btn svg{width:20px;height:20px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.header-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100vw - 60px)}
+
+/* Content */
+.container{padding:68px 12px 40px;max-width:900px;margin:0 auto}
+.chapter-list{display:flex;flex-direction:column;gap:12px}
+
+/* Chapter Card */
+.chapter-card{background:#141414;border:1px solid rgba(0,212,255,0.2);border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:transform 0.15s,border-color 0.15s}
+.chapter-card:active{transform:scale(0.98)}
+.chapter-card:hover{border-color:rgba(0,212,255,0.5);background:#1a1a1a}
+
+.ch-info{flex:1;min-width:0;padding-right:12px}
+.ch-name{color:#fff;font-size:15px;font-weight:700;margin-bottom:6px;line-height:1.4}
+.ch-meta{color:#9ca3af;font-size:12px;font-weight:500}
+
+.ch-arrow{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.ch-arrow svg{width:20px;height:20px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* Skeleton */
+.skel{background:linear-gradient(90deg,#141414 25%,#1e1e1e 50%,#141414 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px;height:80px;margin-bottom:12px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.empty-state{text-align:center;padding:60px 20px;color:#9ca3af;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <button class="back-btn" onclick="history.back()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span class="header-title" id="headerTitle">Chapters</span>
+    </button>
+</div>
+
+<div class="container">
+    <div class="chapter-list" id="chapterList"></div>
+    <div id="loadSkel" style="display:none">
+        <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    </div>
+</div>
+
+<script>
+const QS = new URLSearchParams(location.search);
+const BATCH_ID = QS.get('batchId') || '';
+const SUBJECT_ID = QS.get('subjectId') || '';
+const BATCH_NAME = QS.get('batchName') || '';
+const SUBJECT_NAME = QS.get('subjectName') || '';
+
+if(!BATCH_ID || !SUBJECT_ID) window.location.href = '/index.html';
+
+document.title = (SUBJECT_NAME || 'Chapters') + ' — AS Multiverse';
+document.getElementById('headerTitle').textContent = SUBJECT_NAME || 'Chapters';
+
+function getToken() { return localStorage.getItem('pw_token') || ''; }
+async function pw(url) {
+    const headers = {};
+    const token = getToken();
+    if(token) headers['X-PW-Token'] = token;
+    try {
+        const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
+        if(res.ok || res.status === 401) {
+            const data = await res.json();
+            if(data.needsLogin) { window.location.href = '/login.html'; return null; }
+            return data;
+        }
+        throw new Error('Fallback');
+    } catch(e) {
+        // Fallback for Live Server (no backend)
+        const FALLBACK_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3ODIzOTAxMTMuNzEyLCJkYXRhIjp7Il9pZCI6IjY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsInVzZXJuYW1lIjoiNzgzMDMzNzI3MSIsImZpcnN0TmFtZSI6IkFiaGlzaGVrIiwibGFzdE5hbWUiOiJZYWRhdiIsIm9yZ2FuaXphdGlvbiI6eyJfaWQiOiI1ZWIzOTNlZTk1ZmFiNzQ2OGE3OWQxODkiLCJ3ZWJzaXRlIjoicGh5c2ljc3dhbGxhaC5jb20iLCJuYW1lIjoiUGh5c2ljc3dhbGxhaCJ9LCJyb2xlcyI6WyI1YjI3YmQ5NjU4NDJmOTUwYTc3OGM2ZWYiXSwiY291bnRyeUdyb3VwIjoiSU4iLCJ0eXBlIjoiVVNFUiJ9LCJqdGkiOiJra291RTR3ZVJjV3BIbUdPNWtRQWZ3XzY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsImlhdCI6MTc4MTc4NTMxM30.2w2lMP9BrAhJq5Tt7vrXOyOBM_lGW0tCJnniu_Yogsc";
+        const DIRECT_HEADERS = {
+            "User-Agent": "Dalvik/2.1.0",
+            "client-id": "ADMIN",
+            "client-type": "MOBILE",
+            "client-version": "538",
+            "device-meta": '{"APP_VERSION":"538","APP_VERSION_NAME":"15.32.0","DEVICE_MAKE":"Samsung","DEVICE_MODEL":"SM-A707F","OS_VERSION":"11","PACKAGE_NAME":"xyz.penpencil.physicswala","network":"wifi_data","carrier":"UNDEFINED"}',
+            "authorization": token ? "Bearer " + token : FALLBACK_TOKEN
+        };
+        try {
+            const dirRes = await fetch(url, { headers: DIRECT_HEADERS });
+            return await dirRes.json();
+        } catch(err) {
+            console.error('Direct fetch failed:', err);
+            return null;
+        }
+    }
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ep(s){return encodeURIComponent(s||'')}
+
+let page = 1;
+let loading = false;
+let done = false;
+const list = document.getElementById('chapterList');
+const skel = document.getElementById('loadSkel');
+
+async function loadChapters() {
+    if(loading || done) return;
+    loading = true;
+    
+    skel.style.display = 'block';
+    
+    const data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/subject/${SUBJECT_ID}/topics?page=${page}`);
+    
+    skel.style.display = 'none';
+    
+    if(!data || !data.success || !data.data || data.data.length === 0) {
+        done = true;
+        if(page === 1) list.innerHTML = '<div class="empty-state">No chapters found for this subject.</div>';
+        loading = false;
+        return;
+    }
+
+    data.data.forEach(ch => {
+        const v = ch.videos || 0, e = ch.exercises || 0, n = ch.notes || 0;
+        const a = document.createElement('a');
+        a.className = 'chapter-card';
+        a.href = `/stream.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(SUBJECT_ID)}&chapterId=${ep(ch._id)}&batchName=${ep(BATCH_NAME)}&subjectName=${ep(SUBJECT_NAME)}&chapterName=${ep(ch.name)}&section=videos`;
+        
+        a.innerHTML = `
+            <div class="ch-info">
+                <div class="ch-name">${esc(ch.name)}</div>
+                <div class="ch-meta">${v} Videos &nbsp;|&nbsp; ${e} Exercises &nbsp;|&nbsp; ${n} Notes</div>
+            </div>
+            <div class="ch-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        `;
+        list.appendChild(a);
+    });
+
+    if(data.data.length < 10) done = true;
+    else page++;
+    
+    loading = false;
+}
+
+window.addEventListener('scroll', () => {
+    if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 150) {
+        loadChapters();
+    }
+});
+
+// Init
+loadChapters();
+</script>
+</body>
+</html>

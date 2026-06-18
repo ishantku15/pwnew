@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Subjects — AS Multiverse</title>
+<link rel="icon" type="image/png" href="/static/site_logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
+body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff}
+
+/* Header */
+.header{position:fixed;top:0;left:0;right:0;height:52px;background:#0a0a0a;display:flex;align-items:center;padding:0 12px;z-index:1000;border-bottom:1px solid #1e1e1e}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.5),transparent)}
+.back-btn{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:700;font-size:16px;cursor:pointer;padding:8px 0}
+.back-btn svg{width:20px;height:20px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.header-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100vw - 60px)}
+
+/* Today's Schedule */
+.schedule-section{padding:72px 12px 16px;border-bottom:1px solid #1e1e1e}
+.section-title{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:4px;height:16px;background:#00d4ff;border-radius:4px}
+.schedule-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.schedule-scroll::-webkit-scrollbar{display:none}
+.schedule-card{min-width:260px;width:260px;background:#141414;border:1px solid rgba(0,212,255,0.3);border-radius:14px;overflow:hidden;text-decoration:none;color:#fff;display:block}
+.schedule-thumb{height:120px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;position:relative}
+.schedule-thumb img{width:100%;height:100%;object-fit:cover;object-position:top}
+.tag-live{position:absolute;top:8px;left:8px;background:rgba(239,68,68,0.9);color:#fff;font-size:10px;font-weight:800;padding:4px 8px;border-radius:8px;animation:pulse 2s infinite}
+.tag-upcoming{position:absolute;top:8px;left:8px;background:rgba(0,212,255,0.9);color:#0a0a0a;font-size:10px;font-weight:800;padding:4px 8px;border-radius:8px}
+.tag-ended{position:absolute;top:8px;left:8px;background:rgba(156,163,175,0.9);color:#0a0a0a;font-size:10px;font-weight:800;padding:4px 8px;border-radius:8px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)}70%{box-shadow:0 0 0 6px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.schedule-info{padding:12px}
+.schedule-time{font-size:12px;color:#9ca3af;margin-bottom:4px;font-weight:600}
+.schedule-topic{font-size:14px;font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.schedule-teacher{font-size:12px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Tabs */
+.tabs-container{position:sticky;top:52px;background:rgba(10,10,10,0.95);z-index:900;padding:12px;backdrop-filter:blur(8px);border-bottom:1px solid #1e1e1e}
+.tabs-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tabs-scroll::-webkit-scrollbar{display:none}
+.tab-btn{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;color:#9ca3af;background:transparent;border:1px solid #1e1e1e;cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.tab-btn.active{background:#00d4ff;color:#0a0a0a;border-color:#00d4ff}
+
+/* Panels */
+.panel{display:none;padding:16px 12px 40px;max-width:900px;margin:0 auto}
+.panel.active{display:block}
+
+/* Subjects Grid */
+.subjects-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:768px){.subjects-grid{grid-template-columns:1fr 1fr}}
+.subject-card{background:#141414;border:1px solid rgba(0,212,255,0.2);border-radius:14px;padding:16px;display:flex;align-items:center;gap:16px;text-decoration:none;color:#fff;transition:transform 0.15s,border-color 0.15s;height:72px}
+.subject-card:active{transform:scale(0.98)}
+.subject-card:hover{border-color:rgba(0,212,255,0.5);background:#1a1a1a}
+.sub-icon{width:40px;height:40px;background:rgba(0,212,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sub-name{flex:1;font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub-arrow svg{width:20px;height:20px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* Announcements */
+.ann-list{display:flex;flex-direction:column;gap:12px}
+.ann-card{background:#141414;border-radius:14px;border:1px solid #1e1e1e;padding:16px}
+.ann-date{font-size:12px;color:#00d4ff;font-weight:700;margin-bottom:8px}
+.ann-text{font-size:14px;line-height:1.5;color:#fff}
+.ann-img{width:100%;border-radius:8px;margin-top:12px}
+
+/* Skeletons */
+.skel{background:linear-gradient(90deg,#141414 25%,#1e1e1e 50%,#141414 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Tests */
+.test-filters{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;scrollbar-width:none}
+.test-filters::-webkit-scrollbar{display:none}
+.filter-btn{padding:6px 14px;background:#141414;border:1px solid #1e1e1e;border-radius:16px;color:#9ca3af;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.filter-btn.active{background:rgba(0,212,255,0.1);border-color:#00d4ff;color:#00d4ff}
+.test-card{background:#141414;border:1px solid #1e1e1e;border-radius:14px;padding:16px;margin-bottom:12px}
+.test-title{font-size:15px;font-weight:700;margin-bottom:10px}
+.test-meta{display:flex;gap:12px;font-size:12px;color:#9ca3af;margin-bottom:14px}
+.test-btn{background:#00d4ff;color:#0a0a0a;border:none;border-radius:8px;padding:10px;font-weight:700;width:100%;cursor:pointer}
+
+.empty-state{text-align:center;padding:40px 20px;color:#9ca3af}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <a href="/index.html" class="back-btn">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <span class="header-title" id="headerTitle">Subjects</span>
+    </a>
+</div>
+
+<div class="schedule-section" id="scheduleSection" style="display:none">
+    <div class="section-title">Today's Class</div>
+    <div class="schedule-scroll" id="scheduleList"></div>
+</div>
+
+<div class="tabs-container">
+    <div class="tabs-scroll">
+        <button class="tab-btn active" data-tab="subjects" onclick="switchTab('subjects', this)">All Classes</button>
+        <button class="tab-btn" data-tab="tests" onclick="switchTab('tests', this)">Tests</button>
+        <button class="tab-btn" data-tab="announcements" onclick="switchTab('announcements', this)">Announcements</button>
+    </div>
+</div>
+
+<div id="panel-subjects" class="panel active">
+    <div class="subjects-grid" id="subjectsGrid">
+        <div class="skel" style="height:72px"></div><div class="skel" style="height:72px"></div>
+        <div class="skel" style="height:72px"></div><div class="skel" style="height:72px"></div>
+    </div>
+</div>
+
+<div id="panel-tests" class="panel">
+    <div class="test-filters" id="testFilters"></div>
+    <div id="testsList"></div>
+</div>
+
+<div id="panel-announcements" class="panel">
+    <div class="ann-list" id="annList"></div>
+    <div id="annLoadSkel" style="display:none"><div class="skel" style="height:100px;margin-bottom:12px"></div></div>
+</div>
+
+<script>
+const QS = new URLSearchParams(location.search);
+const BATCH_ID = QS.get('batchId') || '';
+const BATCH_NAME = QS.get('batchName') || '';
+
+if(!BATCH_ID) window.location.href = '/index.html';
+
+document.title = (BATCH_NAME || 'Subjects') + ' — AS Multiverse';
+document.getElementById('headerTitle').textContent = BATCH_NAME || 'Subjects';
+
+function getToken() { return localStorage.getItem('pw_token') || ''; }
+async function pw(url) {
+    const headers = {};
+    const token = getToken();
+    if(token) headers['X-PW-Token'] = token;
+    try {
+        const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
+        if(res.ok || res.status === 401) {
+            const data = await res.json();
+            if(data.needsLogin) { window.location.href = '/login.html'; return null; }
+            return data;
+        }
+        throw new Error('Fallback');
+    } catch(e) {
+        // Fallback for Live Server (no backend)
+        const FALLBACK_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3ODIzOTAxMTMuNzEyLCJkYXRhIjp7Il9pZCI6IjY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsInVzZXJuYW1lIjoiNzgzMDMzNzI3MSIsImZpcnN0TmFtZSI6IkFiaGlzaGVrIiwibGFzdE5hbWUiOiJZYWRhdiIsIm9yZ2FuaXphdGlvbiI6eyJfaWQiOiI1ZWIzOTNlZTk1ZmFiNzQ2OGE3OWQxODkiLCJ3ZWJzaXRlIjoicGh5c2ljc3dhbGxhaC5jb20iLCJuYW1lIjoiUGh5c2ljc3dhbGxhaCJ9LCJyb2xlcyI6WyI1YjI3YmQ5NjU4NDJmOTUwYTc3OGM2ZWYiXSwiY291bnRyeUdyb3VwIjoiSU4iLCJ0eXBlIjoiVVNFUiJ9LCJqdGkiOiJra291RTR3ZVJjV3BIbUdPNWtRQWZ3XzY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsImlhdCI6MTc4MTc4NTMxM30.2w2lMP9BrAhJq5Tt7vrXOyOBM_lGW0tCJnniu_Yogsc";
+        const DIRECT_HEADERS = {
+            "User-Agent": "Dalvik/2.1.0",
+            "client-id": "ADMIN",
+            "client-type": "MOBILE",
+            "client-version": "538",
+            "device-meta": '{"APP_VERSION":"538","APP_VERSION_NAME":"15.32.0","DEVICE_MAKE":"Samsung","DEVICE_MODEL":"SM-A707F","OS_VERSION":"11","PACKAGE_NAME":"xyz.penpencil.physicswala","network":"wifi_data","carrier":"UNDEFINED"}',
+            "authorization": token ? "Bearer " + token : FALLBACK_TOKEN
+        };
+        try {
+            const dirRes = await fetch(url, { headers: DIRECT_HEADERS });
+            return await dirRes.json();
+        } catch(err) {
+            console.error('Direct fetch failed:', err);
+            return null;
+        }
+    }
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function ep(s){return encodeURIComponent(s||'')}
+
+const state = {
+    ann: { page: 1, loading: false, done: false, loaded: false },
+    tests: { loaded: false, activeCat: '' }
+};
+
+async function loadSubjects() {
+    const data = await pw(`https://api.penpencil.co/v3/batches/${BATCH_ID}/details`);
+    const grid = document.getElementById('subjectsGrid');
+    if(!data || !data.data || !data.data.subjects) {
+        grid.innerHTML = '<div class="empty-state">No subjects available</div>';
+        return;
+    }
+    
+    grid.innerHTML = '';
+    data.data.subjects.forEach(sub => {
+        const a = document.createElement('a');
+        a.className = 'subject-card';
+        a.href = `/content.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(sub._id)}&batchName=${ep(BATCH_NAME)}&subjectName=${ep(sub.subject)}`;
+        a.innerHTML = `
+            <div class="sub-icon">📖</div>
+            <div class="sub-name">${esc(sub.subject)}</div>
+            <div class="sub-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        `;
+        grid.appendChild(a);
+    });
+}
+
+async function loadSchedule() {
+    const data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/todays-schedule`);
+    if(!data || !data.data || data.data.length === 0) return;
+    
+    document.getElementById('scheduleSection').style.display = 'block';
+    const list = document.getElementById('scheduleList');
+    
+    // Get teachers
+    const tIds = [...new Set(data.data.map(i => i.facultyId).filter(Boolean))];
+    let tMap = {};
+    if(tIds.length > 0) {
+        const tData = await pw(`https://api.penpencil.co/v1/users/get-user-details-list?userIds=${tIds.join(',')}`);
+        if(tData && tData.data) {
+            tData.data.forEach(t => tMap[t._id] = t);
+        }
+    }
+
+    data.data.forEach(item => {
+        const t = tMap[item.facultyId] || {};
+        const img = t.imageId ? t.imageId.baseUrl + t.imageId.key : '';
+        const name = `${t.firstName||''} ${t.lastName||''}`.trim() || 'Faculty';
+        
+        const now = Date.now();
+        const start = new Date(item.startTime).getTime();
+        const end = new Date(item.endTime).getTime();
+        
+        let tag = 'UPCOMING', tagCls = 'tag-upcoming';
+        if(now >= start && now <= end) { tag = 'LIVE'; tagCls = 'tag-live'; }
+        else if(now > end) { tag = 'ENDED'; tagCls = 'tag-ended'; }
+
+        const timeStr = new Date(item.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        const a = document.createElement('a');
+        a.className = 'schedule-card';
+        a.href = `/schedule-details.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(item.subjectId)}&scheduleId=${ep(item._id)}&tap=video`;
+        
+        a.innerHTML = `
+            <div class="schedule-thumb">
+                ${img ? `<img src="${img}" alt="${esc(name)}">` : ''}
+                <div class="${tagCls}">${tag}</div>
+            </div>
+            <div class="schedule-info">
+                <div class="schedule-time">🕒 ${timeStr} • ${esc(item.subject)}</div>
+                <div class="schedule-topic">${esc(item.topic)}</div>
+                <div class="schedule-teacher">By ${esc(name)}</div>
+            </div>
+        `;
+        list.appendChild(a);
+    });
+}
+
+async function loadAnnouncements() {
+    if(state.ann.loading || state.ann.done) return;
+    state.ann.loading = true;
+    
+    const lsk = document.getElementById('annLoadSkel');
+    lsk.style.display = 'block';
+    
+    const data = await pw(`https://api.penpencil.co/v1/batches/${BATCH_ID}/announcement?page=${state.ann.page}`);
+    lsk.style.display = 'none';
+    state.ann.loaded = true;
+
+    const list = document.getElementById('annList');
+    
+    if(!data || !data.data || data.data.length === 0) {
+        state.ann.done = true;
+        if(state.ann.page === 1) list.innerHTML = '<div class="empty-state">No announcements yet</div>';
+        return;
+    }
+
+    data.data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'ann-card';
+        const d = new Date(item.createdAt);
+        const dateStr = d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        
+        let html = `<div class="ann-date">${dateStr}</div>`;
+        if(item.description) html += `<div class="ann-text">${item.description.replace(/\n/g, '<br>')}</div>`;
+        if(item.image) html += `<img src="${item.image}" class="ann-img">`;
+        
+        div.innerHTML = html;
+        list.appendChild(div);
+    });
+
+    if(data.data.length < 10) state.ann.done = true;
+    else state.ann.page++;
+    
+    state.ann.loading = false;
+}
+
+async function loadTests() {
+    if(state.tests.loaded) return;
+    
+    const fContainer = document.getElementById('testFilters');
+    const tList = document.getElementById('testsList');
+    
+    tList.innerHTML = '<div class="skel" style="height:120px;margin-bottom:12px"></div>'.repeat(3);
+    
+    const filtersRes = await pw(`https://api.penpencil.co/v3/test-service/tests/filters?batchId=${BATCH_ID}`);
+    state.tests.loaded = true;
+    
+    if(!filtersRes || !filtersRes.data || !filtersRes.data.categorySection || filtersRes.data.categorySection.length === 0) {
+        fContainer.style.display = 'none';
+        tList.innerHTML = '<div class="empty-state">No tests available</div>';
+        return;
+    }
+
+    filtersRes.data.categorySection.forEach((cat, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${idx===0 ? 'active' : ''}`;
+        btn.textContent = cat.name;
+        btn.onclick = () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            fetchTestList(cat._id);
+        };
+        fContainer.appendChild(btn);
+        if(idx === 0) fetchTestList(cat._id);
+    });
+}
+
+async function fetchTestList(catId) {
+    const tList = document.getElementById('testsList');
+    tList.innerHTML = '<div class="skel" style="height:120px;margin-bottom:12px"></div>'.repeat(3);
+    
+    const data = await pw(`https://api.penpencil.co/v3/test-service/tests?categorySectionId=${catId}&batchId=${BATCH_ID}`);
+    
+    if(!data || !data.data || data.data.length === 0) {
+        tList.innerHTML = '<div class="empty-state">No tests in this section</div>';
+        return;
+    }
+    
+    tList.innerHTML = '';
+    data.data.forEach(test => {
+        const div = document.createElement('div');
+        div.className = 'test-card';
+        const d = new Date(test.createdAt);
+        div.innerHTML = `
+            <div class="test-title">${esc(test.name)}</div>
+            <div class="test-meta">
+                <span>📋 ${test.totalQuestions} Qs</span>
+                <span>⏱️ ${test.maxDuration} Mins</span>
+                <span>⭐ ${test.totalMarks} Marks</span>
+            </div>
+            <button class="test-btn" onclick="alert('Test platform integration coming soon!')">View Test</button>
+        `;
+        tList.appendChild(div);
+    });
+}
+
+function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    
+    if(tab === 'announcements' && !state.ann.loaded) loadAnnouncements();
+    if(tab === 'tests' && !state.tests.loaded) loadTests();
+}
+
+window.addEventListener('scroll', () => {
+    if(document.getElementById('panel-announcements').classList.contains('active')) {
+        if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 100) {
+            loadAnnouncements();
+        }
+    }
+});
+
+// Init
+(async function() {
+    loadSchedule();
+    await loadSubjects();
+})();
+
+</script>
+</body>
+</html>
