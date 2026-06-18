@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Subjects — AS Multiverse</title>
-<link rel="icon" type="image/png" href="/static/site_logo.png">
+<link rel="icon" type="image/png" href="https://d2bps9p1kiy4ka.cloudfront.net/5b09189f7285894d9130ccd0/e00a5c58-461c-4c43-a911-d606e00ad53b.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -138,7 +138,7 @@ async function pw(url) {
         const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
         if(res.ok || res.status === 401) {
             const data = await res.json();
-            if(data.needsLogin) { window.location.href = '/login.html'; return null; }
+            if(data.needsLogin) { return null; }
             return data;
         }
         throw new Error('Fallback');
