@@ -746,9 +746,8 @@
     /* ═══════════════════════════════════════════
        AUTH HELPERS (for other pages)
     ═══════════════════════════════════════════ */
-    function getToken() { return localStorage.getItem('pw_token') || ''; }
+    function getToken() { return ''; }
     function checkLogin() {
-      if (!getToken()) { window.location.href = '/login'; return false; }
       return true;
     }
 
