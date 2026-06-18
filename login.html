@@ -56,6 +56,33 @@ body,html{min-height:100vh;font-family:'Inter',sans-serif;background:#0a0a0a;col
 .skip-link{text-align:center;margin-top:24px}
 .skip-link a{color:#4b5563;font-size:12px;text-decoration:none;font-weight:500;transition:color 0.2s}
 .skip-link a:hover{color:#9ca3af}
+.instructions-card {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 24px;
+    font-size: 13px;
+    color: #9ca3af;
+    line-height: 1.6;
+}
+.instructions-card h4 {
+    color: #00d4ff;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+.bookmarklet-btn {
+    display: inline-block;
+    background: #1e1e1e;
+    border: 1px dashed #00d4ff;
+    color: #00d4ff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 8px 0;
+    cursor: grab;
+}
 </style>
 </head>
 <body>
@@ -91,15 +118,24 @@ body,html{min-height:100vh;font-family:'Inter',sans-serif;background:#0a0a0a;col
 <!-- Step 1.5: Token Login -->
 <div id="step-token" class="step">
 <div class="step-title">Enter Auth Token</div>
-<div class="step-desc">Paste your PhysicsWallah Bearer token directly to login.</div>
+<div class="step-desc">Paste your PhysicsWallah Bearer token below.</div>
 <div class="input-group">
 <label class="input-label">Bearer Token</label>
-<textarea id="tokenInput" class="input-field" placeholder="eyJhbGciOiJIUzI1NiJ9..." style="height: 120px; resize: none; font-size: 13px; font-family: monospace;"></textarea>
+<textarea id="tokenInput" class="input-field" placeholder="Paste your token here..." style="height: 80px; resize: none; font-size: 13px; font-family: monospace;"></textarea>
 </div>
 <button class="btn btn-primary" id="saveTokenBtn" onclick="saveToken()">
-<span class="btn-text">Login via Token</span>
+<span class="btn-text">Login</span>
 <div class="spinner"></div>
 </button>
+
+<div class="instructions-card">
+    <h4>🚀 How to get your Token (Web Users)</h4>
+    <p>1. Drag this button to your browser's Bookmarks Bar:</p>
+    <a class="bookmarklet-btn" href="javascript:(function(){var t=null,r=/(eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/;for(var i=0;i<localStorage.length;i++){var m=(localStorage.getItem(localStorage.key(i))||'').match(r);if(m){t=m[1];break}}if(!t){for(var i=0;i<sessionStorage.length;i++){var m=(sessionStorage.getItem(sessionStorage.key(i))||'').match(r);if(m){t=m[1];break}}}if(!t){var m=document.cookie.match(r);if(m)t=m[1]}if(t)window.location.href='https://pw.modgalaxy.in/login.html?token='+t;else alert('Could not find PW token! Make sure you are fully logged in and can see your batches.');})();">AS Multiverse Login</a>
+    <p>2. Open <a href="https://pw.live/login" target="_blank" style="color: #00d4ff; text-decoration: none;">pw.live</a> (or clone sites like notjitu.in) and log in.</p>
+    <p>3. Click the bookmark you just saved. You will be instantly logged in here!</p>
+</div>
+
 <div class="skip-link"><a href="javascript:void(0)" onclick="switchStep('phone')">← Back to Phone Login</a></div>
 </div>
 
@@ -265,7 +301,6 @@ document.querySelectorAll('.otp-box').forEach((box, idx, boxes) => {
             boxes[idx - 1].value = '';
         }
     });
-    });
     box.addEventListener('paste', (e) => {
         e.preventDefault();
         const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 4);
@@ -299,6 +334,20 @@ async function saveToken() {
     }
 }
 
+// Check for token in URL (Auto-login for Android WebView or Bookmarklets)
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get('token');
+if (urlToken) {
+    // Wait a brief moment to ensure UI is ready, then switch to token tab and save
+    setTimeout(() => {
+        switchStep('token');
+        document.getElementById('tokenInput').value = urlToken;
+        saveToken();
+        // Instantly redirect to homepage
+        window.location.href = '/';
+    }, 100);
+}
+
 // Phone input: enter key sends OTP
 document.getElementById('phoneInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') sendOtp();
@@ -312,7 +361,7 @@ document.getElementById('phoneInput').addEventListener('keydown', (e) => {
         const daysSince = (Date.now() - loginTime) / (1000 * 60 * 60 * 24);
         if (daysSince < 7) {
             // Already logged in, redirect home
-            // window.location.href = '/';
+            window.location.href = '/';
         }
     }
 })();
