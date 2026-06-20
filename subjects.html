@@ -197,7 +197,7 @@ const BATCH_ID   = QS.get('batchId')   || '';
 const BATCH_NAME = QS.get('batchName') || '';
 if(!BATCH_ID) location.href = '/index.html';
 
-document.title = (BATCH_NAME || 'Subjects') + ' — AS Multiverse';
+document.title = (BATCH_NAME || 'Subjects') + ' - AS Multiverse';
 document.getElementById('headerTitle').textContent = BATCH_NAME || 'Subjects';
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
