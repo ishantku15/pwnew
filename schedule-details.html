@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>window.location.replace('/maintenance.html');</script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Player — AS Multiverse</title>
@@ -63,6 +63,7 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;colo
     <!-- View will be injected here -->
 </div>
 
+<script src="config.js"></script>
 <script>
 const QS = new URLSearchParams(location.search);
 const BATCH_ID = QS.get('batchId') || '';
@@ -74,40 +75,6 @@ const NOTE_IDX = parseInt(QS.get('noteIndex') || '0', 10);
 if(!BATCH_ID || !SUBJECT_ID || !SCHEDULE_ID) window.location.href = '/index.html';
 
 document.getElementById('headerTitle').textContent = TAP === 'video' ? 'Now Playing' : 'Notes';
-
-function getToken() { return localStorage.getItem('pw_token') || ''; }
-async function pw(url) {
-    const headers = {};
-    const token = getToken();
-    if(token) headers['X-PW-Token'] = token;
-    try {
-        const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
-        if(res.ok || res.status === 401) {
-            const data = await res.json();
-            if(data.needsLogin) { throw new Error('Fallback'); }
-            return data;
-        }
-        throw new Error('Fallback');
-    } catch(e) {
-        // Fallback for Live Server (no backend)
-        const FALLBACK_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3ODIzOTAxMTMuNzEyLCJkYXRhIjp7Il9pZCI6IjY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsInVzZXJuYW1lIjoiNzgzMDMzNzI3MSIsImZpcnN0TmFtZSI6IkFiaGlzaGVrIiwibGFzdE5hbWUiOiJZYWRhdiIsIm9yZ2FuaXphdGlvbiI6eyJfaWQiOiI1ZWIzOTNlZTk1ZmFiNzQ2OGE3OWQxODkiLCJ3ZWJzaXRlIjoicGh5c2ljc3dhbGxhaC5jb20iLCJuYW1lIjoiUGh5c2ljc3dhbGxhaCJ9LCJyb2xlcyI6WyI1YjI3YmQ5NjU4NDJmOTUwYTc3OGM2ZWYiXSwiY291bnRyeUdyb3VwIjoiSU4iLCJ0eXBlIjoiVVNFUiJ9LCJqdGkiOiJra291RTR3ZVJjV3BIbUdPNWtRQWZ3XzY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsImlhdCI6MTc4MTc4NTMxM30.2w2lMP9BrAhJq5Tt7vrXOyOBM_lGW0tCJnniu_Yogsc";
-        const DIRECT_HEADERS = {
-            "User-Agent": "Dalvik/2.1.0",
-            "client-id": "ADMIN",
-            "client-type": "MOBILE",
-            "client-version": "538",
-            "device-meta": '{"APP_VERSION":"538","APP_VERSION_NAME":"15.32.0","DEVICE_MAKE":"Samsung","DEVICE_MODEL":"SM-A707F","OS_VERSION":"11","PACKAGE_NAME":"xyz.penpencil.physicswala","network":"wifi_data","carrier":"UNDEFINED"}',
-            "authorization": token ? "Bearer " + token : FALLBACK_TOKEN
-        };
-        try {
-            const dirRes = await fetch(url, { headers: DIRECT_HEADERS });
-            return await dirRes.json();
-        } catch(err) {
-            console.error('Direct fetch failed:', err);
-            return null;
-        }
-    }
-}
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function fmtDate(iso){if(!iso)return'';try{const d=new Date(iso);return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch{return'';}}
@@ -138,7 +105,10 @@ function renderVideoPlayer(title, date, dur, url, isEmbed) {
         video.onerror = () => { pLoad.innerHTML = '<div class="error-msg">Video failed to load</div>'; };
 
         if (Hls.isSupported() && url.includes('.m3u8')) {
-            const hls = new Hls({ maxMaxBufferLength: 60 });
+            const hlsConfig = { 
+                maxMaxBufferLength: 60
+            };
+            const hls = new Hls(hlsConfig);
             hls.loadSource(url);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -147,7 +117,10 @@ function renderVideoPlayer(title, date, dur, url, isEmbed) {
                 video.play().catch(e=>console.log("Autoplay blocked:", e));
             });
             hls.on(Hls.Events.ERROR, (e, data) => {
-                if(data.fatal) pLoad.innerHTML = '<div class="error-msg">Stream playback error</div>';
+                console.error('HLS Error:', data.type, data.details, data);
+                if(data.fatal) {
+                    pLoad.innerHTML = '<div class="error-msg">Stream playback error. Check console for details.</div>';
+                }
             });
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = url;
@@ -170,8 +143,8 @@ function renderNote(title, date, url) {
     `;
 }
 
-function renderError(msg) {
-    main.innerHTML = `<div class="note-container"><div class="error-msg">${esc(msg)}</div><button class="retry-btn" onclick="location.reload()">Retry</button></div>`;
+function renderError(msg, extra) {
+    main.innerHTML = `<div class="note-container"><div class="error-msg">${esc(msg)}</div>${extra ? `<pre style="text-align:left;font-size:11px;color:#9ca3af;background:#1a1a1a;padding:12px;border-radius:8px;margin-top:12px;max-height:200px;overflow:auto;word-break:break-all;white-space:pre-wrap">${esc(extra)}</pre>` : ''}<button class="retry-btn" onclick="location.reload()">Retry</button></div>`;
 }
 
 async function loadData() {
@@ -180,37 +153,81 @@ async function loadData() {
         <div class="video-info"><div class="skel skel-title"></div><div class="skel skel-meta"></div></div>
     `;
 
-    let data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/subject/${SUBJECT_ID}/contents/${SCHEDULE_ID}`);
-    if(!data || !data.success) {
-        data = await pw(`https://api.penpencil.co/v1/batches/${BATCH_ID}/subject/${SUBJECT_ID}/schedule/${SCHEDULE_ID}`);
-    }
-
-    if(!data || !data.success || !data.data) {
-        renderError('Failed to load content details');
-        return;
-    }
-
-    const item = data.data;
+    let videoUrl = '';
+    let isEmbed = false;
+    let title = '';
+    let date = '';
+    let dur = '';
+    let item = null;
 
     if(TAP === 'video') {
-        const vd = item.videoDetails || {};
-        const title = item.topic || vd.name || 'Video Session';
-        const date = fmtDate(item.date || item.startTime);
-        const dur = vd.duration || '';
-        
-        let url = vd.videoUrl;
-        let isEmbed = false;
-        if(!url && vd.key) url = `https://d1d34p8vz63oiq.cloudfront.net/${vd.key}/master.m3u8`;
-        if(!url && vd.embedUrl) { url = vd.embedUrl; isEmbed = true; }
+        // Use dedicated media endpoint (works on both local server and Vercel)
+        try {
+            const mediaRes = await fetch(`/api/media?batchId=${encodeURIComponent(BATCH_ID)}&subjectId=${encodeURIComponent(SUBJECT_ID)}&scheduleId=${encodeURIComponent(SCHEDULE_ID)}`, {
+                headers: getToken() ? { 'X-PW-Token': getToken() } : {}
+            });
+            const mediaData = await mediaRes.json();
+            console.log('Media API response:', mediaData);
+            
+            if(mediaData.success && mediaData.videoUrl) {
+                videoUrl = mediaData.videoUrl;
+                title = mediaData.title || 'Video Session';
+                date = fmtDate(mediaData.date);
+                dur = mediaData.duration || '';
+                item = { homeworkIds: mediaData.homeworkIds || [] };
+            } else if(mediaData.success && mediaData.embedUrl) {
+                videoUrl = mediaData.embedUrl;
+                isEmbed = true;
+                title = mediaData.title || 'Video Session';
+                date = fmtDate(mediaData.date);
+                dur = mediaData.duration || '';
+                item = { homeworkIds: mediaData.homeworkIds || [] };
+            } else {
+                // Show what the API returned for debugging
+                const debugInfo = JSON.stringify(mediaData.rawVideoDetails || mediaData, null, 2);
+                renderError('No video stream available.', 'API response:\n' + debugInfo);
+                return;
+            }
+        } catch(e) {
+            console.error('Media API error:', e);
+            // Fallback to pw() 
+            let data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/subject/${SUBJECT_ID}/contents/${SCHEDULE_ID}`);
+            if(!data || !data.success) {
+                data = await pw(`https://api.penpencil.co/v1/batches/${BATCH_ID}/subject/${SUBJECT_ID}/schedule/${SCHEDULE_ID}`);
+            }
+            if(data && data.success && data.data) {
+                item = data.data;
+                const vd = item.videoDetails || {};
+                title = item.topic || vd.name || 'Video Session';
+                date = fmtDate(item.date || item.startTime);
+                dur = vd.duration || '';
+                videoUrl = vd.videoUrl || '';
+                if(!videoUrl && vd.key) videoUrl = `https://d1d34p8vz63oiq.cloudfront.net/${vd.key}/master.m3u8`;
+                if(!videoUrl && vd.embedUrl) { videoUrl = vd.embedUrl; isEmbed = true; }
+            }
+        }
 
-        if(!url) {
-            renderError('No video stream available for this session');
+        if(!videoUrl) {
+            renderError('No video stream available for this session.');
+            return;
+        }
+            renderError('No video stream available for this session. Check browser console for API response details.');
             return;
         }
 
-        renderVideoPlayer(title, date, dur, url, isEmbed);
-    } 
+        document.getElementById('headerTitle').textContent = title || 'Now Playing';
+        renderVideoPlayer(title, date, dur, videoUrl, isEmbed);
+    }
     else if(TAP === 'note') {
+        let data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/subject/${SUBJECT_ID}/contents/${SCHEDULE_ID}`);
+        if(!data || !data.success) {
+            data = await pw(`https://api.penpencil.co/v1/batches/${BATCH_ID}/subject/${SUBJECT_ID}/schedule/${SCHEDULE_ID}`);
+        }
+        if(!data || !data.success || !data.data) {
+            renderError('Failed to load notes');
+            return;
+        }
+        item = data.data;
         const hws = item.homeworkIds || [];
         let attachments = [];
         hws.forEach(hw => { if(hw.attachmentIds) attachments.push(...hw.attachmentIds); });
@@ -221,12 +238,12 @@ async function loadData() {
             return;
         }
 
-        const title = item.topic || att.name || 'Lecture Notes';
-        const date = fmtDate(item.date || item.startTime);
-        const url = (att.baseUrl || '') + (att.key || '');
+        title = item.topic || att.name || 'Lecture Notes';
+        date = fmtDate(item.date || item.startTime);
+        const noteUrl = (att.baseUrl || '') + (att.key || '');
         
-        if(!url) renderError('Invalid PDF link');
-        else renderNote(title, date, url);
+        if(!noteUrl) renderError('Invalid PDF link');
+        else renderNote(title, date, noteUrl);
     }
 }
 

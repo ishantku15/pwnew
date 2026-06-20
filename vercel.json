@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
     { "source": "/subjects", "destination": "/subjects.html" },
     { "source": "/content", "destination": "/content.html" },
     { "source": "/stream", "destination": "/stream.html" },
@@ -17,5 +18,16 @@
         { "key": "Cache-Control", "value": "s-maxage=60, stale-while-revalidate=300" }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/pw.js": {
+      "maxDuration": 30
+    },
+    "api/auth.js": {
+      "maxDuration": 15
+    },
+    "api/media.js": {
+      "maxDuration": 30
+    }
+  }
 }

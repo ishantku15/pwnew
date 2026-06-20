@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>window.location.replace('/maintenance.html');</script>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Stream — AS Multiverse</title>
@@ -102,6 +102,7 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;colo
     <div id="panel-DppVideos" class="panel"><div class="video-grid" id="grid-DppVideos"></div><div class="skel-wrap" id="skel-DppVideos"></div></div>
 </div>
 
+<script src="config.js"></script>
 <script>
 const QS = new URLSearchParams(location.search);
 const BATCH_ID = QS.get('batchId') || '';
@@ -114,40 +115,6 @@ if(!BATCH_ID || !SUBJECT_ID || !CHAPTER_ID) window.location.href = '/index.html'
 
 document.title = (CHAPTER_NAME || 'Stream') + ' — AS Multiverse';
 document.getElementById('headerTitle').textContent = CHAPTER_NAME || 'Stream';
-
-function getToken() { return localStorage.getItem('pw_token') || ''; }
-async function pw(url) {
-    const headers = {};
-    const token = getToken();
-    if(token) headers['X-PW-Token'] = token;
-    try {
-        const res = await fetch('https://pw.modgalaxy.in/api/pw?url=' + encodeURIComponent(url), { headers });
-        if(res.ok || res.status === 401) {
-            const data = await res.json();
-            if(data.needsLogin) { throw new Error('Fallback'); }
-            return data;
-        }
-        throw new Error('Fallback');
-    } catch(e) {
-        // Fallback for Live Server (no backend)
-        const FALLBACK_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3ODIzOTAxMTMuNzEyLCJkYXRhIjp7Il9pZCI6IjY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsInVzZXJuYW1lIjoiNzgzMDMzNzI3MSIsImZpcnN0TmFtZSI6IkFiaGlzaGVrIiwibGFzdE5hbWUiOiJZYWRhdiIsIm9yZ2FuaXphdGlvbiI6eyJfaWQiOiI1ZWIzOTNlZTk1ZmFiNzQ2OGE3OWQxODkiLCJ3ZWJzaXRlIjoicGh5c2ljc3dhbGxhaC5jb20iLCJuYW1lIjoiUGh5c2ljc3dhbGxhaCJ9LCJyb2xlcyI6WyI1YjI3YmQ5NjU4NDJmOTUwYTc3OGM2ZWYiXSwiY291bnRyeUdyb3VwIjoiSU4iLCJ0eXBlIjoiVVNFUiJ9LCJqdGkiOiJra291RTR3ZVJjV3BIbUdPNWtRQWZ3XzY2OWUzMzhjOGY5ZDhlYzIzZThlNzJkMCIsImlhdCI6MTc4MTc4NTMxM30.2w2lMP9BrAhJq5Tt7vrXOyOBM_lGW0tCJnniu_Yogsc";
-        const DIRECT_HEADERS = {
-            "User-Agent": "Dalvik/2.1.0",
-            "client-id": "ADMIN",
-            "client-type": "MOBILE",
-            "client-version": "538",
-            "device-meta": '{"APP_VERSION":"538","APP_VERSION_NAME":"15.32.0","DEVICE_MAKE":"Samsung","DEVICE_MODEL":"SM-A707F","OS_VERSION":"11","PACKAGE_NAME":"xyz.penpencil.physicswala","network":"wifi_data","carrier":"UNDEFINED"}',
-            "authorization": token ? "Bearer " + token : FALLBACK_TOKEN
-        };
-        try {
-            const dirRes = await fetch(url, { headers: DIRECT_HEADERS });
-            return await dirRes.json();
-        } catch(err) {
-            console.error('Direct fetch failed:', err);
-            return null;
-        }
-    }
-}
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function ep(s){return encodeURIComponent(s||'')}
@@ -275,6 +242,7 @@ async function loadContent(tab) {
                     gIdx += attIdx;
                     
                     const a = document.createElement('a');
+                    a.className = 'note-card';
                     a.href = `https://stream.testuk.org/schedule-details?batchId=${ep(BATCH_ID)}&subjectId=${ep(SUBJECT_ID)}&scheduleId=${ep(item._id)}&tap=note&noteIndex=${gIdx}`;
                     a.target = '_blank';
                     a.innerHTML = `
