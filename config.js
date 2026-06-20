@@ -37,19 +37,15 @@ async function pw(url) {
     const headers = {};
     if (userToken) headers['X-PW-Token'] = userToken;
     const res = await fetchWithTimeout('/api/pw?url=' + encodeURIComponent(url), { headers }, 10000);
-    if (res.ok) {
-      const data = await res.json();
-      if (!data.needsLogin) return data;
-    }
+    const data = await res.json();
+    if (!data.needsLogin) return data;
   } catch (_) {}
 
   // ── Tier 2: proxy WITHOUT token (server uses FALLBACK_TOKEN) ──
   try {
     const res = await fetchWithTimeout('/api/pw?url=' + encodeURIComponent(url), {}, 10000);
-    if (res.ok) {
-      const data = await res.json();
-      if (!data.needsLogin) return data;
-    }
+    const data = await res.json();
+    if (!data.needsLogin) return data;
   } catch (_) {}
 
   // ── Tier 3: direct fetch (local dev) ──
@@ -57,7 +53,7 @@ async function pw(url) {
     const headers = { ...PW_DIRECT_HEADERS };
     if (userToken) headers['authorization'] = 'Bearer ' + userToken;
     const res = await fetchWithTimeout(url, { headers }, 10000);
-    if (res.ok) return await res.json();
+    return await res.json();
   } catch (_) {}
 
   console.warn('[AS] All fetch tiers failed:', url);
