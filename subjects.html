@@ -110,7 +110,7 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#080810;colo
 .test-name{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.4;color:#f1f5f9}
 .test-meta{display:flex;gap:8px;font-size:11px;color:#64748b;margin-bottom:14px;flex-wrap:wrap}
 .test-meta span{background:rgba(255,255,255,0.05);padding:3px 8px;border-radius:8px}
-.test-btn{background:linear-gradient(135deg,#00d4ff,#0ea5e9);color:#0a0a0a;border:none;border-radius:10px;padding:11px;font-weight:800;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:0.3px}
+.test-btn{background:linear-gradient(135deg,#00d4ff,#0ea5e9);color:#0a0a0a;border:none;border-radius:10px;padding:11px;font-weight:800;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:0.3px;display:block;text-align:center;text-decoration:none}
 
 /* ── Empty ── */
 .empty{text-align:center;padding:56px 20px;color:#334155}
@@ -351,42 +351,54 @@ async function loadTests() {
     if(state.tests.loaded) return;
     const fc = document.getElementById('testFilters');
     const tl = document.getElementById('testsList');
-    tl.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
+    tl.innerHTML = '<div class="skel" style="height:100px;margin-bottom:8px"></div>'.repeat(3);
 
     const res = await pw(`https://api.penpencil.co/v3/test-service/tests/filters?batchId=${BATCH_ID}`);
     state.tests.loaded = true;
 
-    if(!res?.data?.categorySection?.length) {
+    // API uses 'categorySections' (plural) with nested 'sections[]
+    const cats = res?.data?.categorySections || res?.data?.categorySection || [];
+    if(!cats.length) {
         fc.style.display = 'none';
-        tl.innerHTML = '<div class="empty"><div class="ico">📋</div>No tests available</div>';
+        tl.innerHTML = '<div class="empty"><div class="ico">📋</div><p>No tests available</p></div>';
         return;
     }
 
-    res.data.categorySection.forEach((cat, i) => {
-        const btn = document.createElement('button');
-        btn.className = `filter-btn${i===0?' active':''}`;
-        btn.textContent = cat.name;
-        btn.onclick = () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            fetchTests(cat._id);
-        };
-        fc.appendChild(btn);
-        if(i === 0) fetchTests(cat._id);
+    cats.forEach((cat, i) => {
+        // each cat has sections[] with {id, title}
+        const sections = cat.sections || [];
+        sections.forEach((sec, j) => {
+            const btn = document.createElement('button');
+            btn.className = `filter-btn${(i===0 && j===0) ? ' active' : ''}`;
+            btn.textContent = sec.title || cat.categoryName || 'Tests';
+            btn.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                fetchTests(sec.id, cat.categoryId);
+            };
+            fc.appendChild(btn);
+            if(i===0 && j===0) fetchTests(sec.id, cat.categoryId);
+        });
     });
 }
 
-async function fetchTests(catId) {
+async function fetchTests(sectionId, categoryId) {
     const tl = document.getElementById('testsList');
-    tl.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
-    const data = await pw(`https://api.penpencil.co/v3/test-service/tests?categorySectionId=${catId}&batchId=${BATCH_ID}`);
+    tl.innerHTML = '<div class="skel" style="height:100px;margin-bottom:8px"></div>'.repeat(3);
+
+    // Try by section first, fallback to batch-level tests
+    let data = await pw(`https://api.penpencil.co/v3/test-service/tests?batchId=${BATCH_ID}&sectionId=${ep(sectionId)}`);
+    if(!data?.data?.length) {
+        data = await pw(`https://api.penpencil.co/v3/test-service/tests?batchId=${BATCH_ID}`);
+    }
 
     if(!data?.data?.length) {
-        tl.innerHTML = '<div class="empty"><div class="ico">📋</div>No tests here</div>';
+        tl.innerHTML = '<div class="empty"><div class="ico">📋</div><p>No tests here</p></div>';
         return;
     }
     tl.innerHTML = '';
     data.data.forEach(t => {
+        const testUrl = `https://stream.testuk.org/test?testId=${ep(t._id)}&batchId=${ep(BATCH_ID)}`;
         const d = document.createElement('div');
         d.className = 'test-card';
         d.innerHTML = `
@@ -396,10 +408,11 @@ async function fetchTests(catId) {
                 <span>⏱️ ${t.maxDuration||0} min</span>
                 <span>⭐ ${t.totalMarks||0} marks</span>
             </div>
-            <button class="test-btn" onclick="alert('Test platform coming soon!')">View Test</button>
+            <a href="${testUrl}" target="_blank" class="test-btn">View Test →</a>
         `;
         tl.appendChild(d);
     });
+}
 }
 
 /* ─── TABS ─── */

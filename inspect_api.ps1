@@ -6,15 +6,20 @@ $h = @{
     'User-Agent' = 'Dalvik/2.1.0'
 }
 
-Write-Host "=== SUBJECT FIELDS ==="
-$r = Invoke-RestMethod -Uri 'https://api.penpencil.co/v3/batches/6779345c20fa0756e4a7fd08/details' -Headers $h
-$sub = $r.data.subjects[0]
-Write-Host "Fields: $($sub.PSObject.Properties.Name -join ', ')"
-Write-Host "imageIds: $(ConvertTo-Json $sub.imageIds -Depth 4)"
-Write-Host "lectureCount: $($sub.lectureCount)"
-Write-Host "subject name: $($sub.subject)"
+Write-Host "=== DPP API test ==="
+$batchId = '6779345c20fa0756e4a7fd08'
+# Get first subject ID
+$r = Invoke-RestMethod -Uri "https://api.penpencil.co/v3/batches/$batchId/details" -Headers $h
+$subjectId = $r.data.subjects[0]._id
+Write-Host "SubjectId: $subjectId"
 
-Write-Host "`n=== FACULTY DETAILS ==="
-$teachers = '60879b8eeb913f00448eeda8'
-$t = Invoke-RestMethod -Uri "https://api.penpencil.co/v1/users/get-user-details-list?userIds=$teachers" -Headers $h
-$t.data[0] | Select-Object firstName, lastName, imageId | ConvertTo-Json -Depth 4
+$dpp = Invoke-RestMethod -Uri "https://api.penpencil.co/v3/test-service/tests/dpp?batchId=$batchId&batchSubjectId=$subjectId&isSubjective=false&page=1" -Headers $h
+Write-Host "DPP count: $($dpp.data.Count)"
+if($dpp.data.Count -gt 0) {
+    $dpp.data[0] | ConvertTo-Json -Depth 4
+}
+
+Write-Host "`n=== TESTS FILTER API ==="
+$tf = Invoke-RestMethod -Uri "https://api.penpencil.co/v3/test-service/tests/filters?batchId=$batchId" -Headers $h
+Write-Host "categorySection count: $($tf.data.categorySection.Count)"
+$tf.data | ConvertTo-Json -Depth 3
