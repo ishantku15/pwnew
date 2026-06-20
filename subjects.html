@@ -116,6 +116,25 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#080810;colo
 .empty{text-align:center;padding:56px 20px;color:#334155}
 .empty .ico{font-size:40px;margin-bottom:12px;opacity:0.4;display:block}
 .empty p{font-size:14px;font-weight:600}
+
+/* ── Desktop Layout ── */
+@media(min-width:768px){
+  .page{max-width:960px;margin:0 auto}
+  .header{left:50%;transform:translateX(-50%);max-width:960px}
+  .tabs-wrap{max-width:960px;left:50%;transform:translateX(-50%);width:100%}
+  .sched-card{min-width:210px;width:210px}
+  .subjects-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .panel{padding:18px 20px 100px}
+  .sched-scroll{padding:0 20px 16px}
+  .sec-label{padding:16px 20px 10px}
+  .ann-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .test-card{display:inline-block;width:calc(50% - 5px);vertical-align:top}
+}
+@media(min-width:1200px){
+  .page,.header,.tabs-wrap{max-width:1200px}
+  .subjects-list{grid-template-columns:1fr 1fr 1fr}
+  .ann-list{grid-template-columns:1fr 1fr 1fr}
+}
 </style>
 </head>
 <body>
