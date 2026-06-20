@@ -71,9 +71,9 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: "Only penpencil API URLs allowed" });
   }
 
-  // Always have a token — FALLBACK_TOKEN is always set
+  // Get token — user token from header takes priority
+  const userToken = req.headers["x-pw-token"] || null;
   const token = getToken(userToken ? `Bearer ${userToken}` : null);
-
   try {
     const headers = { ...PW_HEADERS_BASE, authorization: token };
     const apiRes = await fetch(targetUrl, { headers });
