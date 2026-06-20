@@ -12,83 +12,94 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;colo
 
 /* ── Header ── */
 .header{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(10,10,10,0.97);display:flex;align-items:center;padding:0 16px;z-index:1000;border-bottom:1px solid #1e1e1e;backdrop-filter:blur(12px)}
-.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.6),transparent)}
-.back-btn{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;font-size:15px;cursor:pointer;padding:8px 0;min-width:0;flex:1}
+.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.5),transparent)}
+.back-btn{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;font-size:15px;cursor:pointer;padding:6px 0;flex:1;min-width:0}
 .back-btn svg{width:22px;height:22px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .header-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;font-weight:800}
 
 /* ── Schedule Section ── */
-.schedule-section{padding:72px 0 0}
-.sec-head{font-size:14px;font-weight:800;padding:12px 16px 8px;display:flex;align-items:center;gap:8px;color:#fff;letter-spacing:0.3px}
-.sec-head::before{content:'';width:4px;height:16px;background:linear-gradient(to bottom,#00d4ff,#818cf8);border-radius:4px;flex-shrink:0}
-.schedule-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
-.schedule-scroll::-webkit-scrollbar{display:none}
-.schedule-divider{height:1px;background:#1e1e1e;margin:0 16px}
+.schedule-wrap{padding-top:56px}
+.live-section{display:none}
+.sec-label{font-size:13px;font-weight:800;padding:14px 16px 8px;display:flex;align-items:center;gap:8px;letter-spacing:0.3px}
+.sec-label::before{content:'';width:3px;height:14px;background:#ef4444;border-radius:4px;flex-shrink:0;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
 
-/* Live Class Card */
-.schedule-card{min-width:200px;width:200px;background:#141414;border:1px solid #1e1e1e;border-radius:16px;overflow:hidden;text-decoration:none;color:#fff;display:block;transition:border-color 0.2s,transform 0.15s;flex-shrink:0}
-.schedule-card:active{transform:scale(0.97)}
-.schedule-card.is-live{border-color:rgba(239,68,68,0.5);box-shadow:0 0 12px rgba(239,68,68,0.15)}
-.schedule-card.is-upcoming{border-color:rgba(0,212,255,0.3)}
-.sched-thumb{height:100px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;position:relative;overflow:hidden}
-.sched-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center}
-.sched-tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:0.5px}
-.tag-live{background:rgba(239,68,68,0.95);color:#fff;animation:pulse 2s infinite}
-.tag-upcoming{background:rgba(0,212,255,0.95);color:#0a0a0a}
-.tag-ended{background:rgba(100,116,139,0.9);color:#fff}
+.sched-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none}
+.sched-scroll::-webkit-scrollbar{display:none}
+
+.sched-card{min-width:190px;width:190px;background:#111;border:1px solid #1e1e1e;border-radius:14px;overflow:hidden;text-decoration:none;color:#fff;flex-shrink:0;display:block;transition:transform 0.15s}
+.sched-card:active{transform:scale(0.96)}
+.sched-card.live{border-color:rgba(239,68,68,0.5);box-shadow:0 0 14px rgba(239,68,68,0.15)}
+.sched-card.upcoming{border-color:rgba(0,212,255,0.25)}
+
+.sched-thumb{height:96px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;position:relative;overflow:hidden}
+.sched-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.sched-badge{position:absolute;top:7px;left:7px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase}
+.badge-live{background:rgba(239,68,68,0.95);color:#fff;animation:pulse 2s infinite}
+.badge-upcoming{background:rgba(0,212,255,0.95);color:#0a0a0a}
+.badge-ended{background:rgba(100,116,139,0.85);color:#fff}
+.sched-time-badge{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);font-size:10px;font-weight:700;color:#fff;padding:2px 7px;border-radius:8px}
+
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)}70%{box-shadow:0 0 0 6px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
-.sched-info{padding:10px 12px}
-.sched-time{font-size:11px;color:#00d4ff;font-weight:700;margin-bottom:3px}
-.sched-topic{font-size:12px;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:3px}
-.sched-teacher{font-size:11px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.sched-info{padding:9px 11px 11px}
+.sched-subject{font-size:10px;color:#00d4ff;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-topic{font-size:11px;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:3px;color:#e2e8f0}
+.sched-teacher{font-size:10px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,#1e1e1e,transparent);margin:0 16px}
 
 /* ── Tabs ── */
-.tabs-container{position:sticky;top:56px;background:rgba(10,10,10,0.97);z-index:900;padding:10px 16px;backdrop-filter:blur(12px);border-bottom:1px solid #1e1e1e}
-.tabs-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.tabs-wrap{position:sticky;top:56px;background:rgba(10,10,10,0.97);z-index:900;backdrop-filter:blur(12px);border-bottom:1px solid #1e1e1e}
+.tabs-scroll{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
 .tabs-scroll::-webkit-scrollbar{display:none}
-.tab-btn{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:700;color:#9ca3af;background:transparent;border:1px solid #2a2a2a;cursor:pointer;white-space:nowrap;transition:all 0.2s;font-family:'Inter',sans-serif}
-.tab-btn.active{background:#00d4ff;color:#0a0a0a;border-color:#00d4ff}
+.tab-btn{padding:12px 18px;font-size:13px;font-weight:700;color:#6b7280;background:transparent;border:none;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0}
+.tab-btn.active{color:#00d4ff;border-bottom-color:#00d4ff}
 
 /* ── Panels ── */
-.panel{display:none;padding:12px 16px 80px}
+.panel{display:none;padding:12px 16px 100px}
 .panel.active{display:block}
 
-/* ── Subjects Grid ── */
-.subjects-grid{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:600px){.subjects-grid{grid-template-columns:1fr 1fr}}
-@media(min-width:900px){.subjects-grid{grid-template-columns:1fr 1fr 1fr}}
-
-.subject-card{background:#141414;border:1px solid rgba(0,212,255,0.15);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:#fff;transition:all 0.2s;min-height:64px}
-.subject-card:active{transform:scale(0.98);background:#1a1a1a}
-.subject-card:hover{border-color:rgba(0,212,255,0.4);background:#181818}
-.sub-icon{width:38px;height:38px;background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(129,140,248,0.1));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(0,212,255,0.1)}
-.sub-name{flex:1;font-size:14px;font-weight:700;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.sub-arrow svg{width:18px;height:18px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0.7;flex-shrink:0}
+/* ── Subject Cards ── */
+.subjects-list{display:flex;flex-direction:column;gap:10px}
+.subject-card{background:#111;border:1px solid #1e1e1e;border-radius:14px;display:flex;align-items:center;text-decoration:none;color:#fff;overflow:hidden;transition:all 0.2s;min-height:72px}
+.subject-card:active{transform:scale(0.98)}
+.subject-card:hover{border-color:rgba(0,212,255,0.3);background:#161616}
+.sub-thumb{width:72px;height:72px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;flex-shrink:0;overflow:hidden}
+.sub-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.sub-body{flex:1;padding:10px 12px;min-width:0}
+.sub-name{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sub-count{font-size:11px;color:#6b7280;font-weight:600}
+.sub-count span{color:#00d4ff}
+.sub-arrow{padding:0 14px 0 8px;flex-shrink:0}
+.sub-arrow svg{width:18px;height:18px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0.6}
 
 /* ── Announcements ── */
 .ann-list{display:flex;flex-direction:column;gap:10px}
-.ann-card{background:#141414;border-radius:14px;border:1px solid #1e1e1e;padding:14px 16px}
-.ann-date{font-size:11px;color:#00d4ff;font-weight:700;margin-bottom:6px}
-.ann-text{font-size:13px;line-height:1.6;color:#e2e8f0}
-.ann-img{width:100%;border-radius:10px;margin-top:10px}
+.ann-card{background:#111;border-radius:14px;border:1px solid #1e1e1e;overflow:hidden}
+.ann-head{padding:12px 14px 8px}
+.ann-title{font-size:14px;font-weight:800;margin-bottom:4px;color:#fff}
+.ann-date{font-size:11px;color:#00d4ff;font-weight:600}
+.ann-body{padding:0 14px 12px;font-size:13px;line-height:1.6;color:#cbd5e1}
+.ann-img{width:100%;display:block;max-height:300px;object-fit:cover}
 
-/* ── Skeletons ── */
+/* ── Skeleton ── */
 .skel{background:linear-gradient(90deg,#141414 25%,#1e1e1e 50%,#141414 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ── Tests ── */
-.test-filters{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px;scrollbar-width:none}
-.test-filters::-webkit-scrollbar{display:none}
+.filter-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
 .filter-btn{padding:6px 14px;background:#141414;border:1px solid #1e1e1e;border-radius:16px;color:#9ca3af;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all 0.2s}
 .filter-btn.active{background:rgba(0,212,255,0.1);border-color:#00d4ff;color:#00d4ff}
 .test-card{background:#141414;border:1px solid #1e1e1e;border-radius:14px;padding:16px;margin-bottom:10px}
-.test-title{font-size:14px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.test-name{font-size:14px;font-weight:700;margin-bottom:8px;line-height:1.4}
 .test-meta{display:flex;gap:10px;font-size:12px;color:#9ca3af;margin-bottom:12px;flex-wrap:wrap}
-.test-btn{background:#00d4ff;color:#0a0a0a;border:none;border-radius:10px;padding:10px;font-weight:700;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px}
+.test-btn{background:#00d4ff;color:#0a0a0a;border:none;border-radius:10px;padding:10px;font-weight:800;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px}
 
-/* ── Empty / Error ── */
-.empty-state{text-align:center;padding:48px 20px;color:#4b5563;font-size:14px}
-.empty-state .icon{font-size:40px;margin-bottom:12px;opacity:0.5}
+/* ── Empty ── */
+.empty{text-align:center;padding:48px 20px;color:#4b5563;font-size:14px}
+.empty .ico{font-size:36px;margin-bottom:10px;opacity:0.5}
 </style>
 </head>
 <body>
@@ -100,192 +111,213 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;colo
     </a>
 </div>
 
-<!-- Today's Schedule -->
-<div class="schedule-section">
-    <div id="scheduleSection" style="display:none">
-        <div class="sec-head">🔴 Today's Live Classes</div>
-        <div class="schedule-scroll" id="scheduleList"></div>
-        <div class="schedule-divider"></div>
+<div class="schedule-wrap">
+    <!-- Live Schedule -->
+    <div class="live-section" id="liveSection">
+        <div class="sec-label">Today's Live Classes</div>
+        <div class="sched-scroll" id="schedList"></div>
+        <div class="divider"></div>
     </div>
-</div>
 
-<!-- Tabs -->
-<div class="tabs-container">
-    <div class="tabs-scroll">
-        <button class="tab-btn active" data-tab="subjects" onclick="switchTab('subjects',this)">All Classes</button>
-        <button class="tab-btn" data-tab="tests" onclick="switchTab('tests',this)">Tests</button>
-        <button class="tab-btn" data-tab="announcements" onclick="switchTab('announcements',this)">Announcements</button>
+    <!-- Tabs -->
+    <div class="tabs-wrap">
+        <div class="tabs-scroll">
+            <button class="tab-btn active" onclick="switchTab('classes',this)">All Classes</button>
+            <button class="tab-btn" onclick="switchTab('tests',this)">Tests</button>
+            <button class="tab-btn" onclick="switchTab('announcements',this)">Announcements</button>
+        </div>
     </div>
-</div>
 
-<!-- Subjects Panel -->
-<div id="panel-subjects" class="panel active">
-    <div class="subjects-grid" id="subjectsGrid">
-        <div class="skel" style="height:64px"></div>
-        <div class="skel" style="height:64px"></div>
-        <div class="skel" style="height:64px"></div>
-        <div class="skel" style="height:64px"></div>
+    <!-- All Classes -->
+    <div id="panel-classes" class="panel active">
+        <div class="subjects-list" id="subjectsList">
+            <div class="skel" style="height:72px"></div>
+            <div class="skel" style="height:72px"></div>
+            <div class="skel" style="height:72px"></div>
+            <div class="skel" style="height:72px"></div>
+        </div>
     </div>
-</div>
 
-<!-- Tests Panel -->
-<div id="panel-tests" class="panel">
-    <div class="test-filters" id="testFilters"></div>
-    <div id="testsList"></div>
-</div>
+    <!-- Tests -->
+    <div id="panel-tests" class="panel">
+        <div class="filter-row" id="testFilters"></div>
+        <div id="testsList"></div>
+    </div>
 
-<!-- Announcements Panel -->
-<div id="panel-announcements" class="panel">
-    <div class="ann-list" id="annList"></div>
-    <div id="annLoadSkel" style="display:none"><div class="skel" style="height:100px;margin-bottom:10px"></div></div>
+    <!-- Announcements -->
+    <div id="panel-announcements" class="panel">
+        <div class="ann-list" id="annList"></div>
+        <div id="annSkel" style="display:none"><div class="skel" style="height:100px;margin-bottom:10px"></div></div>
+    </div>
 </div>
 
 <script src="config.js"></script>
 <script>
 const QS = new URLSearchParams(location.search);
-const BATCH_ID  = QS.get('batchId')   || '';
+const BATCH_ID   = QS.get('batchId')   || '';
 const BATCH_NAME = QS.get('batchName') || '';
-
-if(!BATCH_ID) window.location.href = '/index.html';
+if(!BATCH_ID) location.href = '/index.html';
 
 document.title = (BATCH_NAME || 'Subjects') + ' — AS Multiverse';
 document.getElementById('headerTitle').textContent = BATCH_NAME || 'Subjects';
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function ep(s){return encodeURIComponent(s||'')}
+function img(obj){ return obj?.baseUrl && obj?.key ? obj.baseUrl + obj.key : ''; }
 
-/* Parse timestamp — handles both ISO strings and Unix ms/s */
-function parseTime(val) {
-    if(!val) return NaN;
-    const n = Number(val);
-    if(!isNaN(n)) {
-        // unix seconds → ms
-        return n < 1e12 ? n * 1000 : n;
-    }
-    return new Date(val).getTime();
+function fmtTime(iso) {
+    if(!iso) return '';
+    const d = new Date(iso);
+    if(isNaN(d)) return '';
+    return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 }
 
-function fmtTime(val) {
-    const ms = parseTime(val);
-    if(isNaN(ms)) return '—';
-    return new Date(ms).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-}
+const state = { ann:{page:1,loading:false,done:false,loaded:false}, tests:{loaded:false} };
 
-const state = {
-    ann: { page:1, loading:false, done:false, loaded:false },
-    tests: { loaded:false }
-};
-
-/* ── Subjects ── */
+/* ─── SUBJECTS ─── */
 async function loadSubjects() {
     const data = await pw(`https://api.penpencil.co/v3/batches/${BATCH_ID}/details`);
-    const grid = document.getElementById('subjectsGrid');
+    const list = document.getElementById('subjectsList');
 
     if(!data?.data?.subjects?.length) {
-        grid.innerHTML = '<div class="empty-state"><div class="icon">📭</div>No subjects available</div>';
+        list.innerHTML = '<div class="empty"><div class="ico">📭</div>No subjects found</div>';
         return;
     }
 
-    const subjectIcons = ['📖','🔬','⚗️','🧮','🌿','🔭','📐','🧲','💡','📝'];
-    grid.innerHTML = '';
-    data.data.subjects.forEach((sub, i) => {
+    list.innerHTML = '';
+    data.data.subjects.forEach(sub => {
+        const thumbUrl = img(sub.imageId);
+        const count    = sub.lectureCount || 0;
+
         const a = document.createElement('a');
         a.className = 'subject-card';
         a.href = `/content.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(sub._id)}&batchName=${ep(BATCH_NAME)}&subjectName=${ep(sub.subject)}`;
         a.innerHTML = `
-            <div class="sub-icon">${subjectIcons[i % subjectIcons.length]}</div>
-            <div class="sub-name">${esc(sub.subject)}</div>
+            <div class="sub-thumb">
+                ${thumbUrl ? `<img src="${esc(thumbUrl)}" alt="" loading="lazy" onerror="this.parentElement.style.background='#1a1a1a'">` : ''}
+            </div>
+            <div class="sub-body">
+                <div class="sub-name">${esc(sub.subject)}</div>
+                <div class="sub-count">${count ? `<span>${count}</span> Lectures` : 'Tap to explore'}</div>
+            </div>
             <div class="sub-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
         `;
-        grid.appendChild(a);
+        list.appendChild(a);
     });
 }
 
-/* ── Schedule (Live Classes) ── */
+/* ─── LIVE SCHEDULE ─── */
 async function loadSchedule() {
     const data = await pw(`https://api.penpencil.co/v2/batches/${BATCH_ID}/todays-schedule`);
     if(!data?.data?.length) return;
 
-    const items = data.data;
+    // Collect teacher IDs from all schedule items (stored in item.data.teachers[])
+    const allTeacherIds = [];
+    data.data.forEach(item => {
+        const d = item.data || item;
+        if(d.teachers?.length) d.teachers.forEach(id => allTeacherIds.push(id));
+    });
+    const uniqueIds = [...new Set(allTeacherIds)];
 
-    /* Fetch teacher details */
-    const tIds = [...new Set(items.map(i => i.facultyId).filter(Boolean))];
     let tMap = {};
-    if(tIds.length) {
-        const tData = await pw(`https://api.penpencil.co/v1/users/get-user-details-list?userIds=${tIds.join(',')}`);
+    if(uniqueIds.length) {
+        const tData = await pw(`https://api.penpencil.co/v1/users/get-user-details-list?userIds=${uniqueIds.join(',')}`);
         if(tData?.data) tData.data.forEach(t => tMap[t._id] = t);
     }
 
-    document.getElementById('scheduleSection').style.display = 'block';
-    const list = document.getElementById('scheduleList');
+    const section = document.getElementById('liveSection');
+    const list    = document.getElementById('schedList');
+    section.style.display = 'block';
 
-    items.forEach(item => {
-        const t = tMap[item.facultyId] || {};
-        const img = t.imageId ? (t.imageId.baseUrl + t.imageId.key) : '';
-        const name = `${t.firstName||''} ${t.lastName||''}`.trim() || (item.facultyName || 'Faculty');
+    data.data.forEach(wrapper => {
+        const item = wrapper.data || wrapper; // API wraps in .data
 
-        const now   = Date.now();
-        const start = parseTime(item.startTime);
-        const end   = parseTime(item.endTime);
+        const startISO = item.startTime || item.date;
+        const endISO   = item.endTime;
+        const now      = Date.now();
+        const start    = startISO ? new Date(startISO).getTime() : NaN;
+        const end      = endISO   ? new Date(endISO).getTime()   : NaN;
 
-        let tag = 'UPCOMING', tagCls = 'tag-upcoming', cardCls = 'is-upcoming';
+        // Tag from API or compute
+        let tag = (wrapper.tag || item.tag || 'Upcoming').toLowerCase();
+        let badgeCls = 'badge-upcoming', cardCls = 'upcoming', badgeText = 'UPCOMING';
         if(!isNaN(start) && !isNaN(end)) {
-            if(now >= start && now <= end)  { tag = '🔴 LIVE';  tagCls = 'tag-live';   cardCls = 'is-live'; }
-            else if(now > end)              { tag = 'ENDED';    tagCls = 'tag-ended';  cardCls = 'is-ended'; }
+            if(now >= start && now <= end) { tag = 'live'; }
+            else if(now > end)            { tag = 'ended'; }
         }
+        if(tag === 'live')  { badgeCls = 'badge-live';   cardCls = 'live';   badgeText = '🔴 LIVE'; }
+        if(tag === 'ended') { badgeCls = 'badge-ended';  cardCls = 'ended';  badgeText = 'ENDED'; }
 
-        const timeStr = fmtTime(item.startTime);
-        const subject = item.subject || item.subjectName || '';
-        const topic   = item.topic   || item.topicName   || 'Class';
+        // Teacher
+        const firstTeacherId = item.teachers?.[0];
+        const teacher = firstTeacherId ? (tMap[firstTeacherId] || {}) : {};
+        const teacherName = teacher.firstName ? `${teacher.firstName} ${teacher.lastName||''}`.trim() : (item.facultyName || 'Faculty');
+        const teacherImg  = img(teacher.imageId);
+
+        // Subject name from nested object
+        const subjectName = item.subjectId?.name || item.subject || '';
+        const topic       = item.topic || 'Class';
+        const timeStr     = fmtTime(startISO);
+
+        const schedId = item._id || wrapper._id;
+        const subId   = item.subjectId?._id || item.subjectId || '';
 
         const a = document.createElement('a');
-        a.className = `schedule-card ${cardCls}`;
-        /* clicking a live card opens stream.testuk.org */
-        a.href = `https://stream.testuk.org/schedule-details?batchId=${ep(BATCH_ID)}&subjectId=${ep(item.subjectId)}&scheduleId=${ep(item._id)}&tap=video`;
-        a.target = '_blank';
+        a.className = `sched-card ${cardCls}`;
+        a.href      = `https://stream.testuk.org/schedule-details?batchId=${ep(BATCH_ID)}&subjectId=${ep(subId)}&scheduleId=${ep(schedId)}&tap=video`;
+        a.target    = '_blank';
 
         a.innerHTML = `
             <div class="sched-thumb">
-                ${img ? `<img src="${img}" alt="${esc(name)}" onerror="this.remove()">` : ''}
-                <span class="sched-tag ${tagCls}">${tag}</span>
+                ${teacherImg ? `<img src="${esc(teacherImg)}" alt="${esc(teacherName)}" onerror="this.remove()">` : ''}
+                <span class="sched-badge ${badgeCls}">${badgeText}</span>
+                ${timeStr ? `<span class="sched-time-badge">${timeStr}</span>` : ''}
             </div>
             <div class="sched-info">
-                <div class="sched-time">🕒 ${timeStr}${subject ? ' · ' + esc(subject) : ''}</div>
+                <div class="sched-subject">${esc(subjectName)}</div>
                 <div class="sched-topic">${esc(topic)}</div>
-                <div class="sched-teacher">By ${esc(name)}</div>
+                <div class="sched-teacher">By ${esc(teacherName)}</div>
             </div>
         `;
         list.appendChild(a);
     });
 }
 
-/* ── Announcements ── */
+/* ─── ANNOUNCEMENTS ─── */
 async function loadAnnouncements() {
     if(state.ann.loading || state.ann.done) return;
     state.ann.loading = true;
-    const lsk = document.getElementById('annLoadSkel');
-    lsk.style.display = 'block';
+    const skel = document.getElementById('annSkel');
+    skel.style.display = 'block';
 
     const data = await pw(`https://api.penpencil.co/v1/batches/${BATCH_ID}/announcement?page=${state.ann.page}`);
-    lsk.style.display = 'none';
-    state.ann.loaded = true;
+    skel.style.display = 'none';
+    state.ann.loaded   = true;
 
     const list = document.getElementById('annList');
     if(!data?.data?.length) {
         state.ann.done = true;
-        if(state.ann.page === 1) list.innerHTML = '<div class="empty-state"><div class="icon">📢</div>No announcements yet</div>';
+        if(state.ann.page === 1) list.innerHTML = '<div class="empty"><div class="ico">📢</div>No announcements yet</div>';
         return;
     }
 
     data.data.forEach(item => {
+        const d = item.createdAt ? new Date(item.createdAt) : null;
+        const dateStr = d && !isNaN(d) ? d.toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+        const title   = item.heading || '';
+        const body    = item.announcement || item.description || '';
+        const imgUrl  = item.attachment ? img(item.attachment) : (item.image || '');
+
         const div = document.createElement('div');
         div.className = 'ann-card';
-        const d = new Date(parseTime(item.createdAt));
-        const dateStr = isNaN(d) ? '' : d.toLocaleDateString('en-GB') + ' ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-        let html = dateStr ? `<div class="ann-date">${dateStr}</div>` : '';
-        if(item.description) html += `<div class="ann-text">${item.description.replace(/\n/g,'<br>')}</div>`;
-        if(item.image) html += `<img src="${item.image}" class="ann-img" loading="lazy">`;
-        div.innerHTML = html;
+        div.innerHTML = `
+            <div class="ann-head">
+                ${title ? `<div class="ann-title">${esc(title)}</div>` : ''}
+                ${dateStr ? `<div class="ann-date">${dateStr}</div>` : ''}
+            </div>
+            ${body ? `<div class="ann-body">${body.replace(/\n/g,'<br>')}</div>` : ''}
+            ${imgUrl ? `<img src="${esc(imgUrl)}" class="ann-img" loading="lazy">` : ''}
+        `;
         list.appendChild(div);
     });
 
@@ -293,83 +325,81 @@ async function loadAnnouncements() {
     else { state.ann.page++; state.ann.loading = false; }
 }
 
-/* ── Tests ── */
+/* ─── TESTS ─── */
 async function loadTests() {
     if(state.tests.loaded) return;
-    const fContainer = document.getElementById('testFilters');
-    const tList = document.getElementById('testsList');
-    tList.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
+    const fc = document.getElementById('testFilters');
+    const tl = document.getElementById('testsList');
+    tl.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
 
-    const filtersRes = await pw(`https://api.penpencil.co/v3/test-service/tests/filters?batchId=${BATCH_ID}`);
+    const res = await pw(`https://api.penpencil.co/v3/test-service/tests/filters?batchId=${BATCH_ID}`);
     state.tests.loaded = true;
 
-    if(!filtersRes?.data?.categorySection?.length) {
-        fContainer.style.display = 'none';
-        tList.innerHTML = '<div class="empty-state"><div class="icon">📋</div>No tests available</div>';
+    if(!res?.data?.categorySection?.length) {
+        fc.style.display = 'none';
+        tl.innerHTML = '<div class="empty"><div class="ico">📋</div>No tests available</div>';
         return;
     }
 
-    filtersRes.data.categorySection.forEach((cat, idx) => {
+    res.data.categorySection.forEach((cat, i) => {
         const btn = document.createElement('button');
-        btn.className = `filter-btn ${idx===0?'active':''}`;
+        btn.className = `filter-btn${i===0?' active':''}`;
         btn.textContent = cat.name;
         btn.onclick = () => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            fetchTestList(cat._id);
+            fetchTests(cat._id);
         };
-        fContainer.appendChild(btn);
-        if(idx === 0) fetchTestList(cat._id);
+        fc.appendChild(btn);
+        if(i === 0) fetchTests(cat._id);
     });
 }
 
-async function fetchTestList(catId) {
-    const tList = document.getElementById('testsList');
-    tList.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
+async function fetchTests(catId) {
+    const tl = document.getElementById('testsList');
+    tl.innerHTML = '<div class="skel" style="height:120px;margin-bottom:10px"></div>'.repeat(3);
     const data = await pw(`https://api.penpencil.co/v3/test-service/tests?categorySectionId=${catId}&batchId=${BATCH_ID}`);
 
     if(!data?.data?.length) {
-        tList.innerHTML = '<div class="empty-state"><div class="icon">📋</div>No tests in this section</div>';
+        tl.innerHTML = '<div class="empty"><div class="ico">📋</div>No tests here</div>';
         return;
     }
-    tList.innerHTML = '';
-    data.data.forEach(test => {
-        const div = document.createElement('div');
-        div.className = 'test-card';
-        div.innerHTML = `
-            <div class="test-title">${esc(test.name)}</div>
+    tl.innerHTML = '';
+    data.data.forEach(t => {
+        const d = document.createElement('div');
+        d.className = 'test-card';
+        d.innerHTML = `
+            <div class="test-name">${esc(t.name)}</div>
             <div class="test-meta">
-                <span>📋 ${test.totalQuestions||0} Qs</span>
-                <span>⏱️ ${test.maxDuration||0} Mins</span>
-                <span>⭐ ${test.totalMarks||0} Marks</span>
+                <span>📋 ${t.totalQuestions||0} Qs</span>
+                <span>⏱️ ${t.maxDuration||0} min</span>
+                <span>⭐ ${t.totalMarks||0} marks</span>
             </div>
             <button class="test-btn" onclick="alert('Test platform coming soon!')">View Test</button>
         `;
-        tList.appendChild(div);
+        tl.appendChild(d);
     });
 }
 
-/* ── Tab Switching ── */
+/* ─── TABS ─── */
 function switchTab(tab, btn) {
     document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-' + tab).classList.add('active');
-    if(tab === 'announcements' && !state.ann.loaded) loadAnnouncements();
-    if(tab === 'tests' && !state.tests.loaded) loadTests();
+    if(tab === 'announcements' && !state.ann.loaded)  loadAnnouncements();
+    if(tab === 'tests'         && !state.tests.loaded) loadTests();
 }
 
-/* ── Infinite scroll for announcements ── */
 window.addEventListener('scroll', () => {
-    if(document.getElementById('panel-announcements').classList.contains('active')) {
-        if(window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 150) {
-            loadAnnouncements();
-        }
+    const panel = document.getElementById('panel-announcements');
+    if(panel.classList.contains('active') && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 150) {
+        loadAnnouncements();
     }
 });
 
-/* ── Init ── */
-(async function() {
+/* ─── INIT ─── */
+(async () => {
     loadSchedule();
     await loadSubjects();
 })();
