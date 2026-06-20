@@ -74,6 +74,15 @@ export default async function handler(req, res) {
   // Get token — user token from header takes priority
   const userToken = req.headers["x-pw-token"] || null;
   const token = getToken(userToken ? `Bearer ${userToken}` : null);
+
+  if (!token) {
+    return res.status(401).json({
+      error: "No auth token available",
+      needsLogin: true,
+      message: "Please login with your PW account"
+    });
+  }
+
   try {
     const headers = { ...PW_HEADERS_BASE, authorization: token };
     const apiRes = await fetch(targetUrl, { headers });
@@ -107,22 +116,16 @@ export default async function handler(req, res) {
       }
     }
 
-    // If 401 from upstream, still return the data but log it — don't block the user
+    // If 401, clear cache and signal need for login
     if (apiRes.status === 401 || data?.status === 401) {
       cachedToken = null;
       cacheTime = 0;
-      // Try once more with hardcoded fallback before giving up
-      const retryHeaders = { ...PW_HEADERS_BASE, authorization: FALLBACK_TOKEN };
-      try {
-        const retryRes = await fetch(targetUrl, { headers: retryHeaders });
-        if (retryRes.ok) {
-          const retryData = await retryRes.json();
-          res.setHeader("Access-Control-Allow-Origin", "*");
-          return res.status(200).json(retryData);
-        }
-      } catch(_) {}
       res.setHeader("Access-Control-Allow-Origin", "*");
-      return res.status(401).json({ error: "Token expired", needsLogin: false, data: data?.data || null });
+      return res.status(401).json({
+        error: "Token expired",
+        needsLogin: true,
+        message: "Token expired. Please login again."
+      });
     }
 
     // Cache a successful user token for future requests
