@@ -810,7 +810,7 @@
 
       card.innerHTML = `
         <div class="card-thumb-wrap">
-          <img class="card-thumb" src="${b.previewImage || ''}" alt="${esc(b.name)}" loading="lazy" onerror="this.style.display='none'" />
+          <img class="card-thumb" src="${b.previewImage || 'https://i.ibb.co/N2z9f44g/Chat-GPT-Image-Jun-13-2026-06-37-52-PM.png'}" alt="${esc(b.name)}" loading="lazy" onerror="this.src='https://i.ibb.co/N2z9f44g/Chat-GPT-Image-Jun-13-2026-06-37-52-PM.png'" />
           <div class="badge-trending">🔥 TRENDING</div>
           <div class="badge-language">${lang}</div>
           <button class="fav-btn ${favd ? 'fav-active' : ''}" data-id="${b._id}" aria-label="Favourite">${favd ? '❤️' : '🤍'}</button>
@@ -1027,7 +1027,7 @@
         searchDropdown.innerHTML = results.map(b => {
           const highlighted = highlightMatch(esc(b.name), q);
           return `<div class="search-result" data-id="${b._id}" data-name="${esc(b.name)}" data-type="${b.type || ''}">
-            <img src="${b.previewImage || ''}" alt="" onerror="this.style.visibility='hidden'" />
+            <img src="${b.previewImage || 'https://i.ibb.co/N2z9f44g/Chat-GPT-Image-Jun-13-2026-06-37-52-PM.png'}" alt="" onerror="this.src='https://i.ibb.co/N2z9f44g/Chat-GPT-Image-Jun-13-2026-06-37-52-PM.png'" />
             <div class="search-result-info">
               <div class="search-result-name">${highlighted}</div>
               <div class="search-result-by">${esc(b.byName || '')}</div>

@@ -8,115 +8,132 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;outline:none;-webkit-tap-highlight-color:transparent;user-select:none}
-body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden}
+body,html{min-height:100%;font-family:'Inter',sans-serif;background:#080810;color:#fff;overflow-x:hidden}
 
 /* ── Header ── */
-.header{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(10,10,10,0.97);display:flex;align-items:center;padding:0 16px;z-index:1000;border-bottom:1px solid #1e1e1e;backdrop-filter:blur(12px)}
-.header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.5),transparent)}
-.back-btn{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;font-size:15px;cursor:pointer;padding:6px 0;flex:1;min-width:0}
-.back-btn svg{width:22px;height:22px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.header-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:16px;font-weight:800}
+.header{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(8,8,16,0.92);display:flex;align-items:center;padding:0 16px;z-index:1000;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.header-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(0,212,255,0.6) 30%,rgba(129,140,248,0.6) 70%,transparent 100%)}
+.back-btn{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;cursor:pointer;padding:10px 0;flex:1;min-width:0}
+.back-icon{width:36px;height:36px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.back-icon svg{width:18px;height:18px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.header-title{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:linear-gradient(90deg,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 
-/* ── Schedule Section ── */
-.schedule-wrap{padding-top:56px}
-.live-section{display:none}
-.sec-label{font-size:13px;font-weight:800;padding:14px 16px 8px;display:flex;align-items:center;gap:8px;letter-spacing:0.3px}
-.sec-label::before{content:'';width:3px;height:14px;background:#ef4444;border-radius:4px;flex-shrink:0;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+/* ── Page wrap ── */
+.page{padding-top:58px}
 
-.sched-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none}
+/* ── Live Section ── */
+.live-section{display:none;background:linear-gradient(180deg,rgba(239,68,68,0.06) 0%,transparent 100%);padding-bottom:4px}
+.sec-label{font-size:12px;font-weight:800;padding:14px 16px 10px;display:flex;align-items:center;gap:8px;letter-spacing:0.8px;text-transform:uppercase;color:#ef4444}
+.live-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;animation:livepulse 1.4s infinite}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+
+.sched-scroll{display:flex;gap:10px;overflow-x:auto;padding:0 16px 16px;scrollbar-width:none}
 .sched-scroll::-webkit-scrollbar{display:none}
 
-.sched-card{min-width:190px;width:190px;background:#111;border:1px solid #1e1e1e;border-radius:14px;overflow:hidden;text-decoration:none;color:#fff;flex-shrink:0;display:block;transition:transform 0.15s}
-.sched-card:active{transform:scale(0.96)}
-.sched-card.live{border-color:rgba(239,68,68,0.5);box-shadow:0 0 14px rgba(239,68,68,0.15)}
-.sched-card.upcoming{border-color:rgba(0,212,255,0.25)}
+.sched-card{min-width:185px;width:185px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;text-decoration:none;color:#fff;flex-shrink:0;display:block;transition:transform 0.15s,box-shadow 0.2s}
+.sched-card:active{transform:scale(0.95)}
+.sched-card.live{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.05);box-shadow:0 0 20px rgba(239,68,68,0.12)}
+.sched-card.upcoming{border-color:rgba(0,212,255,0.2);background:rgba(0,212,255,0.03)}
 
-.sched-thumb{height:96px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;position:relative;overflow:hidden}
+.sched-thumb{height:100px;background:#131320 url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;position:relative;overflow:hidden}
 .sched-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-.sched-badge{position:absolute;top:7px;left:7px;font-size:9px;font-weight:800;padding:3px 7px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase}
-.badge-live{background:rgba(239,68,68,0.95);color:#fff;animation:pulse 2s infinite}
-.badge-upcoming{background:rgba(0,212,255,0.95);color:#0a0a0a}
-.badge-ended{background:rgba(100,116,139,0.85);color:#fff}
-.sched-time-badge{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);font-size:10px;font-weight:700;color:#fff;padding:2px 7px;border-radius:8px}
+.sched-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,16,0.8) 0%,transparent 60%)}
+.sched-badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:0.6px;text-transform:uppercase}
+.badge-live{background:#ef4444;color:#fff;animation:pulse 2s infinite}
+.badge-upcoming{background:#00d4ff;color:#0a0a0a}
+.badge-ended{background:rgba(100,116,139,0.9);color:#fff}
+.sched-time-pill{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);font-size:10px;font-weight:700;color:#fff;padding:2px 8px;border-radius:20px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.6)}70%{box-shadow:0 0 0 8px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
 
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)}70%{box-shadow:0 0 0 6px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
-
-.sched-info{padding:9px 11px 11px}
-.sched-subject{font-size:10px;color:#00d4ff;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-info{padding:8px 10px 10px}
+.sched-subject{font-size:10px;color:#00d4ff;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.2px}
 .sched-topic{font-size:11px;font-weight:700;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:3px;color:#e2e8f0}
-.sched-teacher{font-size:10px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-teacher{font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.divider{height:1px;background:linear-gradient(90deg,transparent,#1e1e1e,transparent);margin:0 16px}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:0}
 
 /* ── Tabs ── */
-.tabs-wrap{position:sticky;top:56px;background:rgba(10,10,10,0.97);z-index:900;backdrop-filter:blur(12px);border-bottom:1px solid #1e1e1e}
-.tabs-scroll{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tabs-wrap{position:sticky;top:58px;background:rgba(8,8,16,0.95);z-index:900;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.tabs-scroll{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 4px}
 .tabs-scroll::-webkit-scrollbar{display:none}
-.tab-btn{padding:12px 18px;font-size:13px;font-weight:700;color:#6b7280;background:transparent;border:none;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0}
-.tab-btn.active{color:#00d4ff;border-bottom-color:#00d4ff}
+.tab-btn{padding:13px 20px;font-size:13px;font-weight:700;color:#64748b;background:transparent;border:none;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0;position:relative}
+.tab-btn.active{color:#fff;border-bottom-color:#00d4ff}
+.tab-btn.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#00d4ff;border-radius:50%;box-shadow:0 0 8px #00d4ff}
 
 /* ── Panels ── */
-.panel{display:none;padding:12px 16px 100px}
+.panel{display:none;padding:14px 14px 100px}
 .panel.active{display:block}
 
 /* ── Subject Cards ── */
-.subjects-list{display:flex;flex-direction:column;gap:10px}
-.subject-card{background:#111;border:1px solid #1e1e1e;border-radius:14px;display:flex;align-items:center;text-decoration:none;color:#fff;overflow:hidden;transition:all 0.2s;min-height:72px}
-.subject-card:active{transform:scale(0.98)}
-.subject-card:hover{border-color:rgba(0,212,255,0.3);background:#161616}
-.sub-thumb{width:72px;height:72px;background:#1a1a1a url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;flex-shrink:0;overflow:hidden}
+.subjects-list{display:flex;flex-direction:column;gap:8px}
+.subject-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;display:flex;align-items:center;text-decoration:none;color:#fff;overflow:hidden;transition:all 0.2s;min-height:76px;position:relative}
+.subject-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#00d4ff,#818cf8);opacity:0;transition:opacity 0.2s}
+.subject-card:active{transform:scale(0.985);background:rgba(0,212,255,0.05)}
+.subject-card:active::before{opacity:1}
+.subject-card:hover{border-color:rgba(0,212,255,0.2);background:rgba(0,212,255,0.04)}
+.subject-card:hover::before{opacity:1}
+
+.sub-thumb{width:76px;height:76px;background:#131320 url('https://study-mf.pw.live/static/image/teacherbg.807b2b2f.png') center/cover;flex-shrink:0;overflow:hidden;position:relative}
 .sub-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-.sub-body{flex:1;padding:10px 12px;min-width:0}
-.sub-name{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sub-count{font-size:11px;color:#6b7280;font-weight:600}
-.sub-count span{color:#00d4ff}
-.sub-arrow{padding:0 14px 0 8px;flex-shrink:0}
-.sub-arrow svg{width:18px;height:18px;stroke:#00d4ff;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0.6}
+.sub-thumb-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,212,255,0.1),transparent)}
+
+.sub-body{flex:1;padding:12px 14px;min-width:0}
+.sub-name{font-size:14px;font-weight:700;line-height:1.45;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#f1f5f9}
+.sub-meta{display:flex;align-items:center;gap:6px}
+.sub-count-badge{font-size:10px;font-weight:700;color:#00d4ff;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:2px 8px}
+
+.sub-arrow{width:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sub-arrow svg{width:16px;height:16px;stroke:rgba(0,212,255,0.5);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform 0.2s}
+.subject-card:active .sub-arrow svg{transform:translateX(3px)}
 
 /* ── Announcements ── */
 .ann-list{display:flex;flex-direction:column;gap:10px}
-.ann-card{background:#111;border-radius:14px;border:1px solid #1e1e1e;overflow:hidden}
-.ann-head{padding:12px 14px 8px}
-.ann-title{font-size:14px;font-weight:800;margin-bottom:4px;color:#fff}
-.ann-date{font-size:11px;color:#00d4ff;font-weight:600}
-.ann-body{padding:0 14px 12px;font-size:13px;line-height:1.6;color:#cbd5e1}
-.ann-img{width:100%;display:block;max-height:300px;object-fit:cover}
+.ann-card{background:rgba(255,255,255,0.03);border-radius:16px;border:1px solid rgba(255,255,255,0.07);overflow:hidden;transition:border-color 0.2s}
+.ann-card:hover{border-color:rgba(0,212,255,0.2)}
+.ann-head{padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ann-type-badge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#818cf8;background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);border-radius:20px;padding:2px 8px;margin-bottom:8px}
+.ann-title{font-size:15px;font-weight:800;margin-bottom:4px;color:#fff;line-height:1.3}
+.ann-date{font-size:11px;color:#475569;font-weight:600}
+.ann-body{padding:12px 16px;font-size:13px;line-height:1.7;color:#94a3b8}
+.ann-img{width:100%;display:block;object-fit:cover;max-height:260px}
 
 /* ── Skeleton ── */
-.skel{background:linear-gradient(90deg,#141414 25%,#1e1e1e 50%,#141414 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px}
+.skel{background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:16px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ── Tests ── */
-.filter-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none}
+.filter-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px;scrollbar-width:none}
 .filter-row::-webkit-scrollbar{display:none}
-.filter-btn{padding:6px 14px;background:#141414;border:1px solid #1e1e1e;border-radius:16px;color:#9ca3af;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all 0.2s}
-.filter-btn.active{background:rgba(0,212,255,0.1);border-color:#00d4ff;color:#00d4ff}
-.test-card{background:#141414;border:1px solid #1e1e1e;border-radius:14px;padding:16px;margin-bottom:10px}
-.test-name{font-size:14px;font-weight:700;margin-bottom:8px;line-height:1.4}
-.test-meta{display:flex;gap:10px;font-size:12px;color:#9ca3af;margin-bottom:12px;flex-wrap:wrap}
-.test-btn{background:#00d4ff;color:#0a0a0a;border:none;border-radius:10px;padding:10px;font-weight:800;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:14px}
+.filter-btn{padding:7px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:#64748b;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all 0.2s}
+.filter-btn.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#00d4ff}
+.test-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;margin-bottom:8px}
+.test-name{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.4;color:#f1f5f9}
+.test-meta{display:flex;gap:8px;font-size:11px;color:#64748b;margin-bottom:14px;flex-wrap:wrap}
+.test-meta span{background:rgba(255,255,255,0.05);padding:3px 8px;border-radius:8px}
+.test-btn{background:linear-gradient(135deg,#00d4ff,#0ea5e9);color:#0a0a0a;border:none;border-radius:10px;padding:11px;font-weight:800;width:100%;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:0.3px}
 
 /* ── Empty ── */
-.empty{text-align:center;padding:48px 20px;color:#4b5563;font-size:14px}
-.empty .ico{font-size:36px;margin-bottom:10px;opacity:0.5}
+.empty{text-align:center;padding:56px 20px;color:#334155}
+.empty .ico{font-size:40px;margin-bottom:12px;opacity:0.4;display:block}
+.empty p{font-size:14px;font-weight:600}
 </style>
 </head>
 <body>
 
 <div class="header">
     <a href="/index.html" class="back-btn">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <div class="back-icon"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
         <span class="header-title" id="headerTitle">Subjects</span>
     </a>
+    <div class="header-line"></div>
 </div>
 
-<div class="schedule-wrap">
+<div class="page">
     <!-- Live Schedule -->
     <div class="live-section" id="liveSection">
-        <div class="sec-label">Today's Live Classes</div>
+        <div class="sec-label"><span class="live-dot"></span>Today's Live Classes</div>
         <div class="sched-scroll" id="schedList"></div>
-        <div class="divider"></div>
+        <div class="section-divider"></div>
     </div>
 
     <!-- Tabs -->
@@ -150,7 +167,6 @@ body,html{min-height:100%;font-family:'Inter',sans-serif;background:#0a0a0a;colo
         <div id="annSkel" style="display:none"><div class="skel" style="height:100px;margin-bottom:10px"></div></div>
     </div>
 </div>
-
 <script src="config.js"></script>
 <script>
 const QS = new URLSearchParams(location.search);
@@ -194,11 +210,12 @@ async function loadSubjects() {
         a.href = `/content.html?batchId=${ep(BATCH_ID)}&subjectId=${ep(sub._id)}&batchName=${ep(BATCH_NAME)}&subjectName=${ep(sub.subject)}`;
         a.innerHTML = `
             <div class="sub-thumb">
-                ${thumbUrl ? `<img src="${esc(thumbUrl)}" alt="" loading="lazy" onerror="this.parentElement.style.background='#1a1a1a'">` : ''}
+                ${thumbUrl ? `<img src="${esc(thumbUrl)}" alt="" loading="lazy" onerror="this.parentElement.style.background='#131320'">` : ''}
+                <div class="sub-thumb-overlay"></div>
             </div>
             <div class="sub-body">
                 <div class="sub-name">${esc(sub.subject)}</div>
-                <div class="sub-count">${count ? `<span>${count}</span> Lectures` : 'Tap to explore'}</div>
+                <div class="sub-meta">${count ? `<span class="sub-count-badge">${count} Lectures</span>` : ''}</div>
             </div>
             <div class="sub-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
         `;
@@ -270,8 +287,9 @@ async function loadSchedule() {
         a.innerHTML = `
             <div class="sched-thumb">
                 ${teacherImg ? `<img src="${esc(teacherImg)}" alt="${esc(teacherName)}" onerror="this.remove()">` : ''}
+                <div class="sched-thumb-overlay"></div>
                 <span class="sched-badge ${badgeCls}">${badgeText}</span>
-                ${timeStr ? `<span class="sched-time-badge">${timeStr}</span>` : ''}
+                ${timeStr ? `<span class="sched-time-pill">${timeStr}</span>` : ''}
             </div>
             <div class="sched-info">
                 <div class="sched-subject">${esc(subjectName)}</div>
@@ -311,12 +329,15 @@ async function loadAnnouncements() {
         const div = document.createElement('div');
         div.className = 'ann-card';
         div.innerHTML = `
-            <div class="ann-head">
-                ${title ? `<div class="ann-title">${esc(title)}</div>` : ''}
-                ${dateStr ? `<div class="ann-date">${dateStr}</div>` : ''}
+            <div class="ann-card">
+                <div class="ann-head">
+                    ${item.type ? `<div class="ann-type-badge">${esc(item.type)}</div>` : ''}
+                    ${title ? `<div class="ann-title">${esc(title)}</div>` : ''}
+                    ${dateStr ? `<div class="ann-date">${dateStr}</div>` : ''}
+                </div>
+                ${body ? `<div class="ann-body">${body.replace(/\n/g,'<br>')}</div>` : ''}
+                ${imgUrl ? `<img src="${esc(imgUrl)}" class="ann-img" loading="lazy">` : ''}
             </div>
-            ${body ? `<div class="ann-body">${body.replace(/\n/g,'<br>')}</div>` : ''}
-            ${imgUrl ? `<img src="${esc(imgUrl)}" class="ann-img" loading="lazy">` : ''}
         `;
         list.appendChild(div);
     });
